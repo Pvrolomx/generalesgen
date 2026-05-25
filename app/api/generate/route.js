@@ -46,6 +46,8 @@ const FIELD_LABELS = {
   idIssued:          'Date Issued / Fecha de Emisión',
   idExpiry:          'Expiration / Vencimiento',
   idIssuingAuth:     'Issuing Authority / Autoridad Emisora',
+  legalStatus:       'Legal Status in Mexico / Condición Migratoria',
+  migraDocNumber:    'Migration Document No. / No. Documento Migratorio',
   curp:              'CURP',
   rfc:               'RFC',
   ssn:               'SSN (US) / SIN (Canada)',
@@ -79,7 +81,7 @@ const SECTIONS = [
   },
   {
     title: '2. IDENTIFICATION DOCUMENT',
-    keys: ['idType', 'idNumber', 'idIssued', 'idExpiry', 'idIssuingAuth'],
+    keys: ['idType', 'idNumber', 'idIssued', 'idExpiry', 'idIssuingAuth', 'legalStatus', 'migraDocNumber'],
   },
   {
     title: '3. TAX IDENTIFIERS',

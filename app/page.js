@@ -24,7 +24,10 @@ function flags(data) {
   const isRetired    = occ.includes('Retired') || occ.includes('Unemployed')
   const isEmployed   = occ.includes('Employed')
 
-  return { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired, isEmployed }
+  const legalStatus = data.legalStatus || ''
+  const isResident = legalStatus.includes('Residente')
+
+  return { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired, isEmployed, isResident }
 }
 
 
@@ -139,7 +142,7 @@ export default function GeneralesGen() {
   const set = (k, v) => { setData(p => ({ ...p, [k]: v })); setSaved(false) }
   const f = key => data[key] || ''
 
-  const { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired, isEmployed } = flags(data)
+  const { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired, isEmployed, isResident } = flags(data)
 
   // Total visible fields for progress — count non-section visible ones
   // Rough estimate updated dynamically
@@ -260,9 +263,12 @@ export default function GeneralesGen() {
           <Row2>
             <Field fkey="idType" label="ID Type / Tipo de Identificación"
               type="select"
-              options={['', 'Passport / Pasaporte', 'INE / IFE', 'Resident Card / Tarjeta de Residencia', "Driver's License / Licencia de Conducir"]}
-              value={f('idType')} onChange={set} />
-            <Field fkey="idNumber" label="ID Number / Número" placeholder="Ej. A63887765" value={f('idNumber')} onChange={set} />
+              options={isMexican
+                ? ['', 'INE / IFE', 'Passport / Pasaporte', "Driver's License / Licencia de Conducir"]
+                : ['Passport / Pasaporte', 'INE / IFE', 'Resident Card / Tarjeta de Residencia', "Driver's License / Licencia de Conducir"]}
+              value={f('idType') || (isMexican ? '' : 'Passport / Pasaporte')}
+              onChange={set} />
+            <Field fkey="idNumber" label="ID Number / Número" placeholder="Ej. A63887765 / IDMEX..." value={f('idNumber')} onChange={set} />
           </Row2>
           <Row2>
             <Field fkey="idIssued" label="Date Issued / Fecha de Emisión" placeholder="YYYY" value={f('idIssued')} onChange={set} />
@@ -273,6 +279,22 @@ export default function GeneralesGen() {
               placeholder="Ej. Mexican Government / United States Government"
               value={f('idIssuingAuth')} onChange={set} />
           </Row1>
+
+          {/* Condición migratoria — solo extranjeros */}
+          {isForeign && (
+            <>
+              <Row2>
+                <Field fkey="legalStatus" label="Legal Status in Mexico / Condición Migratoria"
+                  type="select"
+                  options={['', 'Turista / Tourist (FMM)', 'Residente Temporal / Temporary Resident', 'Residente Permanente / Permanent Resident']}
+                  value={f('legalStatus')} onChange={set} />
+                {isResident && (
+                  <Field fkey="migraDocNumber" label="Document Number / Número de Documento"
+                    placeholder="Ej. ADQX1234567890" value={f('migraDocNumber')} onChange={set} />
+                )}
+              </Row2>
+            </>
+          )}
 
           {/* ── 3. TAX — inteligente por nacionalidad */}
           <SecHdr label="3. TAX IDENTIFIERS" />
