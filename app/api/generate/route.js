@@ -33,7 +33,9 @@ const bottomBorder = () => ({
 // ─── FIELD LABELS ────────────────────────────────────────────────────
 // Maps data key → display label (bilingual)
 const FIELD_LABELS = {
-  fullName:          'Full Name / Nombre Completo',
+  firstName:         'Nombre(s) / First Name',
+  lastName:          'Apellido(s) / Last Name',
+  fullName:          'Full Name / Nombre Completo',  // built from firstName + lastName
   dob:               'Date of Birth / Fecha de Nacimiento',
   pob:               'Place of Birth / Lugar de Nacimiento',
   nationality:       'Nationality / Nacionalidad',
