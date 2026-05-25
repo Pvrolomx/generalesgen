@@ -26,6 +26,44 @@ function flags(data) {
   return { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired }
 }
 
+
+// ─── DEMO DATA ───────────────────────────────────────────────────────
+const DEMO_DATA = {
+  firstName: 'Rolando',
+  lastName: 'Romero García',
+  dob: '27/04/1966',
+  pob: 'Puerto Vallarta, Jalisco',
+  nationality: 'Mexicana',
+  maritalStatus: 'Married / Casado(a)',
+  maritalRegime: 'Separate Property / Bienes Separados',
+  idType: 'INE / IFE',
+  idNumber: '1974076048195',
+  idIssued: '2018',
+  idExpiry: '2028',
+  idIssuingAuth: 'Mexican Government',
+  curp: 'ROGR660427HJCMRL00',
+  rfc: 'ROGR660427SK8',
+  email: 'pvrolomx@yahoo.com.mx',
+  cellPhone: '322 111 0294',
+  addressMX: 'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
+  occupation: 'Attorney',
+  positionInCompany: 'Auto Empleado / Self-Employed',
+  companyName: 'Expat Advisor MX',
+  companyType: 'Consultoría Inmobiliaria',
+  companyPhone: '322 111 0294',
+  companyAddress: 'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
+  showRef1: true,
+  ref1Name: 'Claudia Rebeca Castillo Soto',
+  ref1Address: 'Paseo del Arque 59, Las Ceibas, Bahía de Banderas, Nayarit, 63735',
+  ref1Phone: '322 306 8482',
+  ref1Email: 'claudia@castlesolutions.biz',
+  showRef2: true,
+  ref2Name: 'Sergio Arturo Miramontes Macías',
+  ref2Address: 'Bolivia 1008, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
+  ref2Phone: '322 150 6996',
+  ref2Email: 'smiramontesm@yahoo.com',
+}
+
 // ─── STYLES ──────────────────────────────────────────────────────────
 const S = {
   page:  { minHeight: '100vh', display: 'flex', flexDirection: 'column', background: C.bg },
@@ -90,6 +128,8 @@ function SecHdr({ label }) {
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────
 export default function GeneralesGen() {
   const [data, setData] = useState({})
+  const showRef1 = !!data.showRef1
+  const showRef2 = !!data.showRef2
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
@@ -127,6 +167,8 @@ export default function GeneralesGen() {
     setGenerating(false)
   }
 
+  const handleDemo = () => { setData(DEMO_DATA); setSaved(false); setError('') }
+
   const handleSave = () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -159,6 +201,7 @@ export default function GeneralesGen() {
           <button style={S.btnSec} onClick={handleLoad}>↑ Cargar</button>
           <button style={S.btnSec} onClick={handleSave}>{saved ? '✓ Guardado' : '↓ Guardar'}</button>
           <button style={{ ...S.btnSec, color: 'rgba(231,76,60,0.6)', borderColor: 'rgba(231,76,60,0.3)' }} onClick={() => { setData({}); setSaved(false); setError('') }}>Limpiar</button>
+          <button style={{ ...S.btnSec, color: C.gold, borderColor: 'rgba(201,168,76,0.5)', background: 'rgba(201,168,76,0.08)' }} onClick={handleDemo}>▶ Demo</button>
         </div>
       </header>
 
@@ -299,26 +342,47 @@ export default function GeneralesGen() {
             </>
           )}
 
-          {/* ── 7 & 8. REFERENCIAS */}
-          <SecHdr label="7. PERSONAL REFERENCE 1 / REFERENCIA PERSONAL 1 (Optional)" />
-          <Row2>
-            <Field fkey="ref1Name"  label="Name / Nombre" placeholder="Nombre completo" value={f('ref1Name')} onChange={set} />
-            <Field fkey="ref1Phone" label="Phone / Teléfono" placeholder="+52 322 000 0000" value={f('ref1Phone')} onChange={set} type="tel" />
-          </Row2>
-          <Row2>
-            <Field fkey="ref1Email"   label="Email" placeholder="email@ejemplo.com" value={f('ref1Email')} onChange={set} type="email" />
-            <Field fkey="ref1Address" label="Address / Domicilio" placeholder="Domicilio completo" value={f('ref1Address')} onChange={set} />
-          </Row2>
+          {/* ── 7. REFERENCIA 1 — toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0 0' }}>
+            <div style={{ ...S.secHdr, margin: 0, flex: 1 }}>7. PERSONAL REFERENCE 1 / REFERENCIA PERSONAL 1</div>
+            <button onClick={() => set('showRef1', !showRef1)} style={{ padding: '5px 14px', fontSize: 11, fontWeight: 'bold', cursor: 'pointer', borderRadius: 4, border: `1px solid ${showRef1 ? 'rgba(201,168,76,0.6)' : 'rgba(201,168,76,0.25)'}`, background: showRef1 ? 'rgba(201,168,76,0.15)' : 'transparent', color: showRef1 ? C.gold : C.muted, fontFamily: 'Arial, sans-serif', whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
+              {showRef1 ? '▲ Ocultar' : '▼ Agregar'}
+            </button>
+          </div>
+          <div style={{ marginBottom: 16 }} />
+          {showRef1 && (
+            <>
+              <Row2>
+                <Field fkey="ref1Name"  label="Name / Nombre" placeholder="Nombre completo" value={f('ref1Name')} onChange={set} />
+                <Field fkey="ref1Phone" label="Phone / Teléfono" placeholder="+52 322 000 0000" value={f('ref1Phone')} onChange={set} type="tel" />
+              </Row2>
+              <Row2>
+                <Field fkey="ref1Email"   label="Email" placeholder="email@ejemplo.com" value={f('ref1Email')} onChange={set} type="email" />
+                <Field fkey="ref1Address" label="Address / Domicilio" placeholder="Domicilio completo" value={f('ref1Address')} onChange={set} />
+              </Row2>
+            </>
+          )}
 
-          <SecHdr label="8. PERSONAL REFERENCE 2 / REFERENCIA PERSONAL 2 (Optional)" />
-          <Row2>
-            <Field fkey="ref2Name"  label="Name / Nombre" placeholder="Nombre completo" value={f('ref2Name')} onChange={set} />
-            <Field fkey="ref2Phone" label="Phone / Teléfono" placeholder="+52 322 000 0000" value={f('ref2Phone')} onChange={set} type="tel" />
-          </Row2>
-          <Row2>
-            <Field fkey="ref2Email"   label="Email" placeholder="email@ejemplo.com" value={f('ref2Email')} onChange={set} type="email" />
-            <Field fkey="ref2Address" label="Address / Domicilio" placeholder="Domicilio completo" value={f('ref2Address')} onChange={set} />
-          </Row2>
+          {/* ── 8. REFERENCIA 2 — toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0 0' }}>
+            <div style={{ ...S.secHdr, margin: 0, flex: 1 }}>8. PERSONAL REFERENCE 2 / REFERENCIA PERSONAL 2</div>
+            <button onClick={() => set('showRef2', !showRef2)} style={{ padding: '5px 14px', fontSize: 11, fontWeight: 'bold', cursor: 'pointer', borderRadius: 4, border: `1px solid ${showRef2 ? 'rgba(201,168,76,0.6)' : 'rgba(201,168,76,0.25)'}`, background: showRef2 ? 'rgba(201,168,76,0.15)' : 'transparent', color: showRef2 ? C.gold : C.muted, fontFamily: 'Arial, sans-serif', whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
+              {showRef2 ? '▲ Ocultar' : '▼ Agregar'}
+            </button>
+          </div>
+          <div style={{ marginBottom: 16 }} />
+          {showRef2 && (
+            <>
+              <Row2>
+                <Field fkey="ref2Name"  label="Name / Nombre" placeholder="Nombre completo" value={f('ref2Name')} onChange={set} />
+                <Field fkey="ref2Phone" label="Phone / Teléfono" placeholder="+52 322 000 0000" value={f('ref2Phone')} onChange={set} type="tel" />
+              </Row2>
+              <Row2>
+                <Field fkey="ref2Email"   label="Email" placeholder="email@ejemplo.com" value={f('ref2Email')} onChange={set} type="email" />
+                <Field fkey="ref2Address" label="Address / Domicilio" placeholder="Domicilio completo" value={f('ref2Address')} onChange={set} />
+              </Row2>
+            </>
+          )}
 
         </div>
 
