@@ -296,32 +296,46 @@ export default function GeneralesGen() {
             </>
           )}
 
-          {/* ── 3. TAX — inteligente por nacionalidad */}
+          {/* ── 3. TAX — inteligente por nacionalidad + condición migratoria */}
           <SecHdr label="3. TAX IDENTIFIERS" />
-          {isMexican ? (
+
+          {/* CURP: mexicanos siempre, extranjeros residentes siempre */}
+          {(isMexican || isResident) && (
             <Row2>
-              <Field fkey="curp" label="CURP" placeholder="ROGR660427HJCMRL00" value={f('curp')} onChange={set} />
-              <Field fkey="rfc"  label="RFC"  placeholder="ROGR660427SK8" value={f('rfc')} onChange={set} />
+              <Field fkey="curp" label={isMexican ? 'CURP' : 'CURP (asignado por INM)'}
+                placeholder="ROGR660427HJCMRL00" value={f('curp')} onChange={set} />
+              <Field fkey="rfc" label={isMexican ? 'RFC' : 'RFC (opcional)'}
+                placeholder="ROGR660427SK8" value={f('rfc')} onChange={set} />
             </Row2>
-          ) : isUS ? (
+          )}
+
+          {/* SSN/SIN: extranjeros según país — turistas y residentes por igual */}
+          {isForeign && isUS && (
             <Row1>
               <Field fkey="ssn" label="Social Security Number (SSN)" placeholder="XXX-XX-XXXX" value={f('ssn')} onChange={set} />
             </Row1>
-          ) : isCanadian ? (
+          )}
+          {isForeign && isCanadian && (
             <Row1>
               <Field fkey="ssn" label="Social Insurance Number (SIN)" placeholder="NNN NNN NNN" value={f('ssn')} onChange={set} />
             </Row1>
-          ) : (
-            // Other / unknown nationality — show all
-            <>
-              <Row2>
-                <Field fkey="curp" label="CURP (si aplica)" placeholder="ROGR660427HJCMRL00" value={f('curp')} onChange={set} />
-                <Field fkey="rfc"  label="RFC (si aplica)"  placeholder="ROGR660427SK8" value={f('rfc')} onChange={set} />
-              </Row2>
-              <Row1>
-                <Field fkey="ssn" label="SSN (US) / SIN (Canada)" placeholder="XXX-XX-XXXX  o  NNN NNN NNN" value={f('ssn')} onChange={set} />
-              </Row1>
-            </>
+          )}
+          {isForeign && !isUS && !isCanadian && !isResident && (
+            <Row1>
+              <Field fkey="ssn" label="Tax ID / Identificador Fiscal (país de origen)" placeholder="Número de identificación fiscal" value={f('ssn')} onChange={set} />
+            </Row1>
+          )}
+          {isForeign && !isUS && !isCanadian && isResident && (
+            <Row1>
+              <Field fkey="ssn" label="Tax ID en país de origen (opcional)" placeholder="Número de identificación fiscal extranjero" value={f('ssn')} onChange={set} />
+            </Row1>
+          )}
+
+          {/* Nota visual si extranjero residente sin condición seleccionada aún */}
+          {isForeign && !isResident && !isUS && !isCanadian && (
+            <div style={{ padding: '8px 12px', background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 4, fontSize: 11, color: 'rgba(201,168,76,0.7)', marginBottom: 8 }}>
+              Selecciona la Condición Migratoria en la sección anterior para ver los campos fiscales correspondientes.
+            </div>
           )}
 
           {/* ── 4. CONTACT */}
