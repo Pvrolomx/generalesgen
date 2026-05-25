@@ -20,10 +20,11 @@ function flags(data) {
   const ms = data.maritalStatus || ''
   const isMarried  = ms.includes('Married') || ms.includes('Common Law')
 
-  const occ = (data.occupation || '').toLowerCase()
-  const isRetired  = occ.includes('retir') || occ.includes('jubil') || occ.includes('pensionado')
+  const occ = data.occupation || ''
+  const isRetired    = occ.includes('Retired') || occ.includes('Unemployed')
+  const isEmployed   = occ.includes('Employed')
 
-  return { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired }
+  return { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired, isEmployed }
 }
 
 
@@ -46,7 +47,8 @@ const DEMO_DATA = {
   email: 'pvrolomx@yahoo.com.mx',
   cellPhone: '322 111 0294',
   addressMX: 'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
-  occupation: 'Attorney',
+  occupation: 'Employed / Empleado',
+  occupationDetail: 'Attorney / Abogado',
   positionInCompany: 'Auto Empleado / Self-Employed',
   companyName: 'Expat Advisor MX',
   companyType: 'Consultoría Inmobiliaria',
@@ -137,7 +139,7 @@ export default function GeneralesGen() {
   const set = (k, v) => { setData(p => ({ ...p, [k]: v })); setSaved(false) }
   const f = key => data[key] || ''
 
-  const { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired } = flags(data)
+  const { isMexican, isUS, isCanadian, isForeign, isMarried, isRetired, isEmployed } = flags(data)
 
   // Total visible fields for progress — count non-section visible ones
   // Rough estimate updated dynamically
@@ -321,12 +323,18 @@ export default function GeneralesGen() {
             </Row1>
           )}
 
-          {/* ── 6. OCCUPATION — colapsa si retirado */}
+          {/* ── 6. OCCUPATION — select + conditional company block */}
           <SecHdr label="6. OCCUPATION / EMPRESA" />
-          <Row1>
-            <Field fkey="occupation" label="Occupation / Ocupación" placeholder="Ej. Attorney, Retired / Jubilado, Empresario" value={f('occupation')} onChange={set} />
-          </Row1>
-          {!isRetired && (
+          <Row2>
+            <Field fkey="occupation" label="Employment Status / Situación Laboral"
+              type="select"
+              options={['', 'Employed / Empleado', 'Retired / Jubilado', 'Unemployed / Desempleado']}
+              value={f('occupation')} onChange={set} />
+            {isEmployed && (
+              <Field fkey="occupationDetail" label="Occupation / Ocupación" placeholder="Ej. Attorney, Médico, Empresario" value={f('occupationDetail')} onChange={set} />
+            )}
+          </Row2>
+          {isEmployed && (
             <>
               <Row2>
                 <Field fkey="positionInCompany" label="Position / Puesto" placeholder="Ej. Owner, Director General" value={f('positionInCompany')} onChange={set} />

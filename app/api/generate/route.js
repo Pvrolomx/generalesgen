@@ -54,7 +54,8 @@ const FIELD_LABELS = {
   homePhone:         'Home Phone / Tel. Casa',
   addressMX:         'Address in Mexico / Domicilio en México',
   addressAbroad:     'Address Abroad / Domicilio Extranjero',
-  occupation:        'Occupation / Ocupación',
+  occupation:        'Employment Status / Situación Laboral',
+  occupationDetail:  'Occupation / Ocupación',
   positionInCompany: 'Position / Puesto',
   companyName:       'Company / Empresa',
   companyType:       'Type of Company / Tipo de Empresa',
@@ -94,7 +95,8 @@ const SECTIONS = [
   },
   {
     title: '6. OCCUPATION / EMPRESA',
-    keys: ['occupation', 'positionInCompany', 'companyName', 'companyType', 'companyPhone', 'companyAddress'],
+    keys: ['occupation', 'occupationDetail', 'positionInCompany', 'companyName', 'companyType', 'companyPhone', 'companyAddress'],
+    optional: false,
   },
   {
     title: '7. PERSONAL REFERENCE 1 / REFERENCIA PERSONAL 1',
