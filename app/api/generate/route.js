@@ -58,6 +58,14 @@ const FIELD_LABELS = {
   companyType:       'Type of Company / Tipo de Empresa',
   companyPhone:      'Company Phone / Tel. Empresa',
   companyAddress:    'Company Address / Domicilio Empresa',
+  ref1Name:          'Name / Nombre',
+  ref1Phone:         'Phone / Teléfono',
+  ref1Email:         'Email',
+  ref1Address:       'Address / Domicilio',
+  ref2Name:          'Name / Nombre',
+  ref2Phone:         'Phone / Teléfono',
+  ref2Email:         'Email',
+  ref2Address:       'Address / Domicilio',
 }
 
 // ─── SECTION GROUPING ────────────────────────────────────────────────
@@ -85,6 +93,16 @@ const SECTIONS = [
   {
     title: '6. OCCUPATION / EMPRESA',
     keys: ['occupation', 'positionInCompany', 'companyName', 'companyType', 'companyPhone', 'companyAddress'],
+  },
+  {
+    title: '7. PERSONAL REFERENCE 1 / REFERENCIA PERSONAL 1',
+    keys: ['ref1Name', 'ref1Phone', 'ref1Email', 'ref1Address'],
+    optional: true,
+  },
+  {
+    title: '8. PERSONAL REFERENCE 2 / REFERENCIA PERSONAL 2',
+    keys: ['ref2Name', 'ref2Phone', 'ref2Email', 'ref2Address'],
+    optional: true,
   },
 ]
 
@@ -197,7 +215,11 @@ function buildDocument(data) {
 
   // ── SECTIONS
   SECTIONS.forEach((sec) => {
-    // Only include section if at least one field has data (or always show for structure)
+    // Skip optional sections if all fields are empty
+    if (sec.optional) {
+      const hasData = sec.keys.some(k => data[k] && String(data[k]).trim())
+      if (!hasData) return
+    }
     children.push(sectionHeader(sec.title))
 
     const rows = sec.keys.map((key, idx) => {

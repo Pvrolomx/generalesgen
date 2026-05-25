@@ -68,6 +68,18 @@ const FIELDS = [
   { key: 'companyType',     label: 'Type of Company / Tipo de Empresa', placeholder: 'Ej. Property Management / Administradora de Propiedades' },
   { key: 'companyPhone',    label: 'Company Phone / Teléfono de la Empresa', placeholder: '+52 322 000 0000', type: 'tel' },
   { key: 'companyAddress',  label: 'Company Address / Domicilio de la Empresa', placeholder: 'Dirección completa', type: 'textarea' },
+
+  { key: '_sec_ref1', type: 'section', label: 'PERSONAL REFERENCE 1 / REFERENCIA PERSONAL 1 (Optional)' },
+  { key: 'ref1Name',    label: 'Name / Nombre', placeholder: 'Nombre completo' },
+  { key: 'ref1Phone',   label: 'Phone / Teléfono', placeholder: '+52 322 000 0000', type: 'tel' },
+  { key: 'ref1Email',   label: 'Email', placeholder: 'email@ejemplo.com', type: 'email' },
+  { key: 'ref1Address', label: 'Address / Domicilio', placeholder: 'Domicilio completo', type: 'textarea' },
+
+  { key: '_sec_ref2', type: 'section', label: 'PERSONAL REFERENCE 2 / REFERENCIA PERSONAL 2 (Optional)' },
+  { key: 'ref2Name',    label: 'Name / Nombre', placeholder: 'Nombre completo' },
+  { key: 'ref2Phone',   label: 'Phone / Teléfono', placeholder: '+52 322 000 0000', type: 'tel' },
+  { key: 'ref2Email',   label: 'Email', placeholder: 'email@ejemplo.com', type: 'email' },
+  { key: 'ref2Address', label: 'Address / Domicilio', placeholder: 'Domicilio completo', type: 'textarea' },
 ]
 
 // ─── STYLES ──────────────────────────────────────────────────────────
