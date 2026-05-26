@@ -31,6 +31,17 @@ function flags(data) {
 }
 
 
+
+// ─── UNIT CONVERTERS ─────────────────────────────────────────────────
+function feetInchesToMeters(ft, inches) {
+  const totalInches = (parseFloat(ft) || 0) * 12 + (parseFloat(inches) || 0)
+  return totalInches > 0 ? (totalInches * 0.0254).toFixed(2) : ''
+}
+function lbsToKg(lbs) {
+  const v = parseFloat(lbs)
+  return v > 0 ? (v * 0.453592).toFixed(1) : ''
+}
+
 // ─── DEMO DATA ───────────────────────────────────────────────────────
 const DEMO_DATA = {
   firstName: 'Rolando',
@@ -135,6 +146,7 @@ export default function GeneralesGen() {
   const [data, setData] = useState({})
   const showRef1 = !!data.showRef1
   const showRef2 = !!data.showRef2
+  const showMigracion = !!data.showMigracion
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
@@ -428,6 +440,168 @@ export default function GeneralesGen() {
             </>
           )}
 
+          {/* ── 9. FORMATO BÁSICO MIGRACIÓN — solo extranjeros, toggle */}
+          {isForeign && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0 0' }}>
+                <div style={{ ...S.secHdr, margin: 0, flex: 1, background: '#2C1B4E' }}>
+                  9. FORMATO BÁSICO — MIGRACIÓN / INM BASIC FORM
+                </div>
+                <button onClick={() => set('showMigracion', !showMigracion)} style={{ padding: '5px 14px', fontSize: 11, fontWeight: 'bold', cursor: 'pointer', borderRadius: 4, border: `1px solid ${showMigracion ? 'rgba(180,120,255,0.6)' : 'rgba(180,120,255,0.25)'}`, background: showMigracion ? 'rgba(180,120,255,0.12)' : 'transparent', color: showMigracion ? '#C084FC' : C.muted, fontFamily: 'Arial, sans-serif', whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
+                  {showMigracion ? '▲ Ocultar' : '▼ Agregar'}
+                </button>
+              </div>
+              <div style={{ marginBottom: 16 }} />
+            </>
+          )}
+
+          {isForeign && showMigracion && (
+            <>
+              {/* Datos personales complementarios */}
+              <div style={{ fontSize: 10, color: C.dim, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 10 }}>Datos personales / Personal data</div>
+              <Row2>
+                <Field fkey="sexo" label="Sexo / Sex" type="select"
+                  options={['', 'Masculino / Male', 'Femenino / Female']}
+                  value={f('sexo')} onChange={set} />
+                <Field fkey="numHijos" label="Número de hijos / No. of Children" placeholder="0" value={f('numHijos')} onChange={set} />
+              </Row2>
+              <Row2>
+                <Field fkey="idiomaMaterno" label="Idioma materno / Native Language" placeholder="Ej. English, Français" value={f('idiomaMaterno')} onChange={set} />
+                <Field fkey="hablaEspanol" label="¿Habla español? / Speaks Spanish?" type="select"
+                  options={['', 'Sí / Yes', 'No', 'Básico / Basic']}
+                  value={f('hablaEspanol')} onChange={set} />
+              </Row2>
+              <Row2>
+                <Field fkey="religion" label="Religión / Religion" placeholder="Ej. Catholic, None / Ninguna" value={f('religion')} onChange={set} />
+                <Field fkey="raza" label="Raza / Race" type="select"
+                  options={['', 'Blanca / White', 'Amarilla / Asian', 'Negra / Black', 'Nativa / Indigenous', 'Mestiza / Mixed']}
+                  value={f('raza')} onChange={set} />
+              </Row2>
+              <Row2>
+                <Field fkey="escolaridad" label="Nivel de estudios / Education Level" type="select"
+                  options={["", "Sin estudios / None", "Primaria / Elementary", "Secundaria / Middle School", "Preparatoria / High School", "Licenciatura / Bachelor's", "Maestría / Master's", "Doctorado / PhD", "Posgrado / Postgraduate"]}
+                  value={f('escolaridad')} onChange={set} />
+                <Field fkey="areaConocimiento" label="Área de conocimiento / Field of Study" placeholder="Ej. Law, Engineering, Medicine" value={f('areaConocimiento')} onChange={set} />
+              </Row2>
+
+              {/* Media filiación con convertidores */}
+              <div style={{ fontSize: 10, color: C.dim, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '12px 0 10px' }}>Media filiación / Physical description</div>
+
+              {/* ESTATURA — convertidor ft/in → metros */}
+              <div style={{ marginBottom: 14 }}>
+                <label style={S.label}>Estatura / Height</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, alignItems: 'end' }}>
+                  <div>
+                    <label style={{ ...S.label, fontSize: 10, color: C.dim }}>Feet / Pies</label>
+                    <input style={S.input} type="number" min="3" max="8" placeholder="5"
+                      value={data.heightFt || ''}
+                      onChange={e => {
+                        const ft = e.target.value
+                        set('heightFt', ft)
+                        const m = feetInchesToMeters(ft, data.heightIn || 0)
+                        if (m) set('estatura', m)
+                      }} />
+                  </div>
+                  <div>
+                    <label style={{ ...S.label, fontSize: 10, color: C.dim }}>Inches / Pulgadas</label>
+                    <input style={S.input} type="number" min="0" max="11" placeholder="10"
+                      value={data.heightIn || ''}
+                      onChange={e => {
+                        const inches = e.target.value
+                        set('heightIn', inches)
+                        const m = feetInchesToMeters(data.heightFt || 0, inches)
+                        if (m) set('estatura', m)
+                      }} />
+                  </div>
+                  <div>
+                    <label style={{ ...S.label, fontSize: 10, color: C.goldBright }}>→ Metros (INM)</label>
+                    <input style={{ ...S.input, borderColor: 'rgba(201,168,76,0.4)', color: C.gold }} type="text" placeholder="1.78"
+                      value={f('estatura')}
+                      onChange={e => set('estatura', e.target.value)} />
+                  </div>
+                  <div>
+                    <Field fkey="complexion" label="Complexión / Build" type="select"
+                      options={['', 'Delgada / Slim', 'Mediana / Medium', 'Robusta / Heavy']}
+                      value={f('complexion')} onChange={set} />
+                  </div>
+                </div>
+              </div>
+
+              {/* PESO — convertidor lbs → kg */}
+              <div style={{ marginBottom: 14 }}>
+                <label style={S.label}>Peso / Weight</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, alignItems: 'end' }}>
+                  <div>
+                    <label style={{ ...S.label, fontSize: 10, color: C.dim }}>Pounds / Libras</label>
+                    <input style={S.input} type="number" min="50" max="600" placeholder="175"
+                      value={data.weightLbs || ''}
+                      onChange={e => {
+                        const lbs = e.target.value
+                        set('weightLbs', lbs)
+                        const kg = lbsToKg(lbs)
+                        if (kg) set('peso', kg)
+                      }} />
+                  </div>
+                  <div>
+                    <label style={{ ...S.label, fontSize: 10, color: C.goldBright }}>→ Kilograms / Kg (INM)</label>
+                    <input style={{ ...S.input, borderColor: 'rgba(201,168,76,0.4)', color: C.gold }} type="text" placeholder="79.4"
+                      value={f('peso')}
+                      onChange={e => set('peso', e.target.value)} />
+                  </div>
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <Field fkey="senas" label="Señas particulares / Distinguishing marks" placeholder="Ej. Scar on left hand / Tatuaje en brazo derecho" value={f('senas')} onChange={set} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Lugar de residencia anterior */}
+              <div style={{ fontSize: 10, color: C.dim, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '12px 0 10px' }}>Lugar de residencia anterior / Prior residence</div>
+              <Row2>
+                <Field fkey="paisResidenciaAnterior" label="País de residencia antes de México / Country before Mexico" placeholder="Ej. United States, Canada" value={f('paisResidenciaAnterior')} onChange={set} />
+                <Field fkey="tipoPoblacion" label="Tipo de población / Type of area" type="select"
+                  options={['', 'Ciudad / City', 'Suburbio / Suburb', 'Pueblo / Town', 'Aldea / Village', 'Caserío / Hamlet']}
+                  value={f('tipoPoblacion')} onChange={set} />
+              </Row2>
+              <Row2>
+                <Field fkey="nombrePoblacion" label="Nombre de la población / City or Town" placeholder="Ej. Seattle, Calgary" value={f('nombrePoblacion')} onChange={set} />
+                <Field fkey="estadoProvincia" label="Estado / Provincia / Province or State" placeholder="Ej. Washington, British Columbia" value={f('estadoProvincia')} onChange={set} />
+              </Row2>
+
+              {/* Datos laborales en país de origen */}
+              <div style={{ fontSize: 10, color: C.dim, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '12px 0 10px' }}>Datos laborales en país de origen / Work data in home country</div>
+              <Row2>
+                <Field fkey="actividadPrincipal" label="Actividad principal / Primary activity" type="select"
+                  options={['', 'Trabajar / Working', 'Estudiar / Studying', 'Hogar / Homemaker', 'Jubilado / Retired', 'Ministro de culto / Minister', 'Rentista / Investor', 'Desempleado / Unemployed']}
+                  value={f('actividadPrincipal')} onChange={set} />
+                <Field fkey="ingresoMensualUSD" label="Ingreso mensual neto (USD) / Monthly net income (USD)" placeholder="Ej. 3500" value={f('ingresoMensualUSD')} onChange={set} />
+              </Row2>
+              {(f('actividadPrincipal') || '').includes('Trabajar') && (
+                <>
+                  <Row2>
+                    <Field fkey="sectorTrabajo" label="Sector / Rama de trabajo" type="select"
+                      options={['', 'Agropecuario / Agriculture', 'Minería / Mining', 'Construcción / Construction', 'Industria manufacturera / Manufacturing', 'Comercio / Commerce', 'Transportes / Transportation', 'Servicios educativos / Education', 'Servicios de salud / Health', 'Servicios personales / Personal services', 'Gobierno / Government', 'Tecnología / Technology', 'Otro / Other']}
+                      value={f('sectorTrabajo')} onChange={set} />
+                    <Field fkey="situacionTrabajo" label="Situación en el trabajo / Employment type" type="select"
+                      options={['', 'Empleado / Employee', 'Jornalero / Day laborer', 'Patrón / Employer', 'Independiente / Self-employed', 'Sin pago / Unpaid family worker', 'Otro / Other']}
+                      value={f('situacionTrabajo')} onChange={set} />
+                  </Row2>
+                  <Row1>
+                    <Field fkey="ocupacionTrabajo" label="Ocupación / Occupation type" type="select"
+                      options={['', 'Profesionista o técnico / Professional or technical', 'Directivo / Executive', 'Administrativo / Administrative', 'Comerciante / Sales', 'Servicios / Services', 'Agropecuario / Agricultural', 'Industrial / Industrial', 'Otro / Other']}
+                      value={f('ocupacionTrabajo')} onChange={set} />
+                  </Row1>
+                </>
+              )}
+
+              {/* Información laboral en México */}
+              <div style={{ fontSize: 10, color: C.dim, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '12px 0 10px' }}>Información laboral en México / Work info in Mexico</div>
+              <Row2>
+                <Field fkey="anosExpMexico" label="Años de experiencia laboral en México / Years of work exp. in Mexico" placeholder="0" value={f('anosExpMexico')} onChange={set} />
+                <Field fkey="periodoContratacion" label="Período de contratación (meses) / Contract period (months)" placeholder="12" value={f('periodoContratacion')} onChange={set} />
+              </Row2>
+            </>
+          )}
+
         </div>
 
         {error && (
@@ -448,7 +622,7 @@ export default function GeneralesGen() {
         </div>
       </main>
 
-      <footer style={S.footer}>GeneralesGen v1.1  |  Expat Advisor MX  |  La Colmena 2026</footer>
+      <footer style={S.footer}>GeneralesGen v1.2  |  Expat Advisor MX  |  La Colmena 2026</footer>
     </div>
   )
 }
