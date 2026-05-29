@@ -71,6 +71,21 @@ const TRANSLATIONS = {
   ocupacionTrabajo:{ es:'Tipo de ocupación', en:'Occupation type', fr:"Type d'occupation" },
   anosExp:         { es:'Años exp. laboral en México', en:'Work exp. years in Mexico', fr:"Années d'expérience au Mexique" },
   periodoContrat:  { es:'Período de contratación (meses)', en:'Contract period (months)', fr:'Période de contrat (mois)' },
+  // ── FIXED DOCUMENT STRINGS (institutional text only; Rolo's fixed data
+  //    — cédula, name, URL — stays inline in the builder, untranslated)
+  docTitle:  {
+    es:'INFORMACIÓN GENERAL DEL CLIENTE',
+    en:'CUSTOMER GENERAL INFORMATION',
+    fr:'INFORMATIONS GÉNÉRALES DU CLIENT',
+  },
+  declLabel: { es:'Declaración:', en:'Declaration:', fr:'Déclaration:' },
+  declText:  {
+    es:'Declaro bajo protesta de decir verdad que toda la información aquí proporcionada es verídica y correcta.',
+    en:'I declare under penalty of perjury that all information provided herein is true and correct.',
+    fr:'Je déclare sous peine de parjure que toutes les informations fournies dans le présent document sont véridiques et exactes.',
+  },
+  sigDate:   { es:'FECHA', en:'DATE', fr:'DATE' },
+  sigName:   { es:'NOMBRE Y FIRMA', en:'NAME AND SIGNATURE', fr:'NOM ET SIGNATURE' },
 }
 function i18nT(key, lang) {
   const l = lang || 'es'
@@ -404,7 +419,7 @@ function buildDocument(data, lang) {
       alignment: AlignmentType.CENTER,
       spacing: { before: 0, after: 60 },
       children: [
-        new TextRun({ text: 'CUSTOMER GENERAL INFORMATION', font: FONT, size: 28, bold: true, color: DARK }),
+        new TextRun({ text: TT('docTitle'), font: FONT, size: 28, bold: true, color: DARK }),
       ],
     }),
     new Paragraph({
@@ -456,12 +471,12 @@ function buildDocument(data, lang) {
     new Paragraph({
       spacing: { before: 0, after: 60 },
       border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: DARK, space: 1 } },
-      children: [new TextRun({ text: '  Declaration / Declaración:', font: FONT, size: 16, bold: true, color: DARK })],
+      children: [new TextRun({ text: '  ' + TT('declLabel'), font: FONT, size: 16, bold: true, color: DARK })],
     }),
     new Paragraph({
       spacing: { before: 8, after: 100 },
       children: [new TextRun({
-        text: 'I declare under penalty of perjury that all information provided herein is true and correct. / Declaro bajo protesta de decir verdad que toda la información aquí proporcionada es verídica y correcta.',
+        text: TT('declText'),
         font: FONT, size: 14, color: GRAY, italics: true,
       })],
     }),
@@ -506,7 +521,7 @@ function buildDocument(data, lang) {
               margins: { top: 40, bottom: 0, left: 0, right: 0 },
               children: [new Paragraph({
                 alignment: AlignmentType.CENTER,
-                children: [new TextRun({ text: 'DATE / FECHA', font: FONT, size: 14, color: GRAY, bold: true })],
+                children: [new TextRun({ text: TT('sigDate'), font: FONT, size: 14, color: GRAY, bold: true })],
               })],
             }),
             new TableCell({
@@ -520,7 +535,7 @@ function buildDocument(data, lang) {
               margins: { top: 40, bottom: 0, left: 0, right: 0 },
               children: [new Paragraph({
                 alignment: AlignmentType.CENTER,
-                children: [new TextRun({ text: 'NAME AND SIGNATURE / NOMBRE Y FIRMA', font: FONT, size: 14, color: GRAY, bold: true })],
+                children: [new TextRun({ text: TT('sigName'), font: FONT, size: 14, color: GRAY, bold: true })],
               })],
             }),
           ],
