@@ -14,7 +14,7 @@ function lbsToKg(lbs){const v=parseFloat(lbs);return v>0?(v*0.453592).toFixed(1)
 
 const DEMO_DATA={
   firstName:'Rolando',lastName:'Romero García',dob:'27/04/1966',pob:'Puerto Vallarta, Jalisco',
-  nationality:'Mexicana',maritalStatus:'Married',maritalRegime:'SepProp',
+  nationality:'Mexicana',maritalStatus:'Married',maritalRegime:'SepProp',sexo:'M',
   idType:'INE',idNumber:'1974076048195',idIssued:'2018',idExpiry:'2028',idIssuingAuth:'Mexican Government',
   curp:'ROGR660427HJCMRL00',rfc:'ROGR660427SK8',
   email:'pvrolomx@yahoo.com.mx',cellPhone:'322 111 0294',
