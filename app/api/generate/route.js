@@ -4,6 +4,9 @@ import {
   AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign,
 } from 'docx'
 
+// docx depends on Node APIs; pin the route to the Node.js runtime (not Edge).
+export const runtime = 'nodejs'
+
 
 // ─── INLINE i18n (ES / EN / FR) ──────────────────────────────────────
 const TRANSLATIONS = {
