@@ -315,6 +315,21 @@ function declarationText(lang, sexo) {
   return i18nT('declText', lang)
 }
 
+// Free-text idIssuingAuth normalization (not a select, so resolveValue
+// doesn't touch it). Maps common English authority strings to ES; any
+// other value prints as-is (safe fallback).
+const AUTHORITY_MAP = {
+  'Mexican Government':       'Gobierno Mexicano / SRE',
+  'United States Government': 'Gobierno de los Estados Unidos',
+  'Canadian Government':      'Gobierno de Canadá',
+}
+function normalizeAuthority(value) {
+  if (value == null) return ''
+  const v = String(value).trim()
+  if (!v) return ''
+  return AUTHORITY_MAP[v] ?? v
+}
+
 // ─── SECTION GROUPING ────────────────────────────────────────────────
 const SECTIONS = [
   {
@@ -484,8 +499,10 @@ function buildDocument(data, lang) {
 
     const rows = sec.keys.map((key, idx) => {
       const label = getLabel(key)
-      const value = resolveValue(data[key] || '', lang, data.sexo)
-      return fieldRow(label, value, idx % 2 === 1)
+      const raw = key === 'idIssuingAuth'
+        ? normalizeAuthority(data[key] || '')
+        : resolveValue(data[key] || '', lang, data.sexo)
+      return fieldRow(label, raw, idx % 2 === 1)
     })
 
     children.push(dataTable(rows), spacer(40))
