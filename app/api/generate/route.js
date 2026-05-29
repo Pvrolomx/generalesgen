@@ -319,7 +319,7 @@ function declarationText(lang, sexo) {
 const SECTIONS = [
   {
     titleKey: 'sec1',
-    keys: ['fullName', 'dob', 'pob', 'nationality', 'maritalStatus', 'maritalRegime'],
+    keys: ['firstName', 'lastName', 'dob', 'pob', 'nationality', 'maritalStatus', 'maritalRegime'],
   },
   {
     titleKey: 'sec2',
