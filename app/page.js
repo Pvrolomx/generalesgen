@@ -119,7 +119,7 @@ export default function GeneralesGen(){
     if(!f('firstName')&&!f('lastName')){setError(T('errorRequired'));return}
     setError('');setGenerating(true)
     try{
-      const payload={...data,lang,fullName:[f('lastName'),f('firstName')].filter(Boolean).join(', '),homePhone:f('homePhone')||f('cellPhone')}
+      const payload={...data,lang,fullName:[f('firstName'),f('lastName')].filter(Boolean).join(' '),homePhone:f('homePhone')||f('cellPhone')}
       const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       if(!res.ok)throw new Error()
       const blob=await res.blob()

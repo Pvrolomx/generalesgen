@@ -444,8 +444,8 @@ function buildDocument(data, lang) {
   // ── FILE INFO (date + name)
   children.push(
     dataTable([
-      fieldRow('Date / Fecha', today, false),
-      fieldRow('Client / Cliente', data.fullName || '', true),
+      fieldRow('Fecha', today, false),
+      fieldRow('Cliente', data.fullName || '', true),
     ]),
     spacer(60),
   )
