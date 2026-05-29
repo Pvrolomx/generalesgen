@@ -170,6 +170,110 @@ const LABEL_MAP = {
   ref2Address:       'refAddress',
 }
 
+// ─── VALUE LABELS ────────────────────────────────────────────────────
+// Translates internal select VALUES (stored crudos: 'Married','SepProp','INE'…)
+// to human-readable text per language. Unmapped values print as-is (safe fallback).
+// Note: 'Other'/'Agro' codes are shared across sector/situacion/ocupacion fields;
+// their text is equivalent, so a single flat map is safe.
+const VALUE_LABELS = {
+  // nationality
+  Mexicana:    { es:'Mexicana', en:'Mexican', fr:'Mexicaine' },
+  American:    { es:'Estadounidense', en:'American', fr:'Américain(e)' },
+  Canadian:    { es:'Canadiense', en:'Canadian', fr:'Canadien(ne)' },
+  Other:       { es:'Otra', en:'Other', fr:'Autre' },
+  // maritalStatus
+  Single:      { es:'Soltero(a)', en:'Single', fr:'Célibataire' },
+  Married:     { es:'Casado(a)', en:'Married', fr:'Marié(e)' },
+  Divorced:    { es:'Divorciado(a)', en:'Divorced', fr:'Divorcé(e)' },
+  Widowed:     { es:'Viudo(a)', en:'Widowed', fr:'Veuf/Veuve' },
+  CommonLaw:   { es:'Unión libre', en:'Common Law', fr:'Union de fait' },
+  // maritalRegime
+  SepProp:     { es:'Bienes Separados', en:'Separate Property', fr:'Séparation de biens' },
+  CommProp:    { es:'Sociedad Conyugal', en:'Community Property', fr:'Communauté de biens' },
+  // idType
+  INE:         { es:'INE / IFE', en:'INE / IFE', fr:'INE / IFE' },
+  Passport:    { es:'Pasaporte', en:'Passport', fr:'Passeport' },
+  License:     { es:'Licencia de Conducir', en:"Driver's License", fr:'Permis de conduire' },
+  Resident:    { es:'Tarjeta de Residencia', en:'Resident Card', fr:'Carte de résident' },
+  // legalStatus
+  Tourist:     { es:'Turista (FMM)', en:'Tourist (FMM)', fr:'Touriste (FMM)' },
+  RT:          { es:'Residente Temporal', en:'Temporary Resident', fr:'Résident temporaire' },
+  RP:          { es:'Residente Permanente', en:'Permanent Resident', fr:'Résident permanent' },
+  // occupation (employment status)
+  Employed:    { es:'Empleado', en:'Employed', fr:'Employé(e)' },
+  Retired:     { es:'Jubilado', en:'Retired', fr:'Retraité(e)' },
+  Unemployed:  { es:'Desempleado', en:'Unemployed', fr:'Sans emploi' },
+  // sexo
+  M:           { es:'Masculino', en:'Male', fr:'Masculin' },
+  F:           { es:'Femenino', en:'Female', fr:'Féminin' },
+  // hablaEspanol
+  Si:          { es:'Sí', en:'Yes', fr:'Oui' },
+  No:          { es:'No', en:'No', fr:'Non' },
+  Basico:      { es:'Básico', en:'Basic', fr:'Basique' },
+  // raza
+  Blanca:      { es:'Blanca', en:'White', fr:'Blanche' },
+  Amarilla:    { es:'Amarilla (Asiática)', en:'Asian', fr:'Asiatique' },
+  Negra:       { es:'Negra', en:'Black', fr:'Noire' },
+  Nativa:      { es:'Nativa / Indígena', en:'Indigenous', fr:'Autochtone' },
+  Mestiza:     { es:'Mestiza', en:'Mixed', fr:'Métis(se)' },
+  // escolaridad
+  None:        { es:'Sin estudios', en:'No formal education', fr:'Sans études' },
+  Prim:        { es:'Primaria', en:'Elementary', fr:'Primaire' },
+  Sec:         { es:'Secundaria', en:'Middle School', fr:'Collège' },
+  Prep:        { es:'Preparatoria / Bachillerato', en:'High School', fr:'Lycée / Baccalauréat' },
+  Lic:         { es:'Licenciatura', en:"Bachelor's", fr:'Licence' },
+  Mae:         { es:'Maestría', en:"Master's", fr:'Master' },
+  Doc:         { es:'Doctorado', en:'PhD', fr:'Doctorat' },
+  Pos:         { es:'Posgrado', en:'Postgraduate', fr:'Post-graduate' },
+  // complexion
+  Delgada:     { es:'Delgada', en:'Slim', fr:'Mince' },
+  Mediana:     { es:'Mediana', en:'Medium', fr:'Moyenne' },
+  Robusta:     { es:'Robusta', en:'Heavy', fr:'Robuste' },
+  // tipoPoblacion
+  Ciudad:      { es:'Ciudad', en:'City', fr:'Ville' },
+  Suburbio:    { es:'Suburbio', en:'Suburb', fr:'Banlieue' },
+  Pueblo:      { es:'Pueblo', en:'Town', fr:'Bourg' },
+  Aldea:       { es:'Aldea', en:'Village', fr:'Village' },
+  Caserio:     { es:'Caserío', en:'Hamlet', fr:'Hameau' },
+  // actividadPrincipal
+  Working:     { es:'Trabajar', en:'Working', fr:'Travail' },
+  Studying:    { es:'Estudiar', en:'Studying', fr:'Études' },
+  Hogar:       { es:'Hogar', en:'Homemaker', fr:'Foyer' },
+  Minister:    { es:'Ministro de culto', en:'Minister', fr:'Ministre du culte' },
+  Investor:    { es:'Rentista', en:'Investor', fr:'Rentier(ère)' },
+  // sectorTrabajo
+  Agro:        { es:'Agropecuario', en:'Agriculture', fr:'Agriculture' },
+  Mining:      { es:'Minería', en:'Mining', fr:'Mines' },
+  Constr:      { es:'Construcción', en:'Construction', fr:'Construction' },
+  Manuf:       { es:'Manufactura', en:'Manufacturing', fr:'Fabrication' },
+  Commerce:    { es:'Comercio', en:'Commerce', fr:'Commerce' },
+  Transport:   { es:'Transportes', en:'Transportation', fr:'Transports' },
+  Edu:         { es:'Servicios educativos', en:'Education', fr:'Éducation' },
+  Health:      { es:'Salud', en:'Health', fr:'Santé' },
+  Tech:        { es:'Tecnología', en:'Technology', fr:'Technologie' },
+  Gov:         { es:'Gobierno', en:'Government', fr:'Gouvernement' },
+  // situacionTrabajo
+  Employee:    { es:'Empleado', en:'Employee', fr:'Employé(e)' },
+  Patron:      { es:'Patrón', en:'Employer', fr:'Employeur' },
+  Independent: { es:'Independiente', en:'Self-employed', fr:'Indépendant(e)' },
+  DayLabor:    { es:'Jornalero', en:'Day laborer', fr:'Journalier' },
+  // ocupacionTrabajo
+  Prof:        { es:'Profesionista', en:'Professional', fr:'Professionnel(le)' },
+  Exec:        { es:'Directivo', en:'Executive', fr:'Cadre dirigeant' },
+  Admin:       { es:'Administrativo', en:'Administrative', fr:'Administratif' },
+  Sales:       { es:'Comerciante', en:'Sales', fr:'Commerçant(e)' },
+  Services:    { es:'Servicios', en:'Services', fr:'Services' },
+  Industrial:  { es:'Industrial', en:'Industrial', fr:'Industriel' },
+}
+function resolveValue(value, lang) {
+  if (value == null) return ''
+  const v = String(value).trim()
+  if (!v) return ''
+  const entry = VALUE_LABELS[v]
+  if (!entry) return v               // safe fallback: print as-is
+  return entry[lang] ?? entry['es'] ?? v
+}
+
 // ─── SECTION GROUPING ────────────────────────────────────────────────
 const SECTIONS = [
   {
@@ -339,7 +443,7 @@ function buildDocument(data, lang) {
 
     const rows = sec.keys.map((key, idx) => {
       const label = getLabel(key)
-      const value = data[key] || ''
+      const value = resolveValue(data[key] || '', lang)
       return fieldRow(label, value, idx % 2 === 1)
     })
 
