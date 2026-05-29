@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { T as i18nT } from '../../i18n'
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign,
@@ -31,100 +32,101 @@ const bottomBorder = () => ({
 })
 
 // ─── FIELD LABELS ────────────────────────────────────────────────────
-// Maps data key → display label (bilingual)
-const FIELD_LABELS = {
-  firstName:         'Nombre(s) / First Name',
-  lastName:          'Apellido(s) / Last Name',
-  fullName:          'Full Name / Nombre Completo',  // built from firstName + lastName
-  dob:               'Date of Birth / Fecha de Nacimiento',
-  pob:               'Place of Birth / Lugar de Nacimiento',
-  nationality:       'Nationality / Nacionalidad',
-  maritalStatus:     'Marital Status / Estado Civil',
-  maritalRegime:     'Marital Regime / Régimen Matrimonial',
-  idType:            'ID Type / Tipo de Identificación',
-  idNumber:          'ID Number / Número',
-  idIssued:          'Date Issued / Fecha de Emisión',
-  idExpiry:          'Expiration / Vencimiento',
-  idIssuingAuth:     'Issuing Authority / Autoridad Emisora',
-  legalStatus:       'Legal Status in Mexico / Condición Migratoria',
-  migraDocNumber:    'Migration Document No. / No. Documento Migratorio',
-  curp:              'CURP',
-  rfc:               'RFC',
-  ssn:               'SSN (US) / SIN (Canada)',
-  email:             'Email',
-  cellPhone:         'Cell Phone / Celular',
-  homePhone:         'Home Phone / Tel. Casa',
-  addressMX:         'Address in Mexico / Domicilio en México',
-  addressAbroad:     'Address Abroad / Domicilio Extranjero',
-  occupation:        'Employment Status / Situación Laboral',
-  occupationDetail:  'Occupation / Ocupación',
-  positionInCompany: 'Position / Puesto',
-  companyName:       'Company / Empresa',
-  companyType:       'Type of Company / Tipo de Empresa',
-  companyPhone:      'Company Phone / Tel. Empresa',
-  companyAddress:    'Company Address / Domicilio Empresa',
-  sexo:                   'Sexo / Sex',
-  numHijos:               'No. de hijos / No. of Children',
-  idiomaMaterno:          'Idioma materno / Native Language',
-  hablaEspanol:           '¿Habla español? / Speaks Spanish?',
-  religion:               'Religión / Religion',
-  raza:                   'Raza / Race',
-  escolaridad:            'Nivel de estudios / Education Level',
-  areaConocimiento:       'Área de conocimiento / Field of Study',
-  estatura:               'Estatura (m) / Height (m)',
-  complexion:             'Complexión / Build',
-  peso:                   'Peso (kg) / Weight (kg)',
-  senas:                  'Señas particulares / Distinguishing marks',
-  paisResidenciaAnterior: 'País de residencia anterior / Prior country',
-  tipoPoblacion:          'Tipo de población / Area type',
-  nombrePoblacion:        'Nombre de la población / City or Town',
-  estadoProvincia:        'Estado / Provincia / State or Province',
-  actividadPrincipal:     'Actividad principal / Primary activity',
-  ingresoMensualUSD:      'Ingreso mensual neto (USD) / Monthly income (USD)',
-  sectorTrabajo:          'Sector de trabajo / Work sector',
-  situacionTrabajo:       'Situación en el trabajo / Employment type',
-  ocupacionTrabajo:       'Ocupación / Occupation type',
-  anosExpMexico:          'Años exp. laboral en México / Work exp. years in Mexico',
-  periodoContratacion:    'Período de contratación (meses) / Contract period (months)',
-  ref1Name:          'Name / Nombre',
-  ref1Phone:         'Phone / Teléfono',
-  ref1Email:         'Email',
-  ref1Address:       'Address / Domicilio',
-  ref2Name:          'Name / Nombre',
-  ref2Phone:         'Phone / Teléfono',
-  ref2Email:         'Email',
-  ref2Address:       'Address / Domicilio',
+// Per-language label maps — keyed by field key, value is i18n key in i18n.js
+// Fallback: show raw i18n key if not mapped
+const LABEL_MAP = {
+  firstName:         'firstName',
+  lastName:          'lastName',
+  fullName:          'firstName',  // built label
+  dob:               'dob',
+  pob:               'pob',
+  nationality:       'nationality',
+  maritalStatus:     'maritalStatus',
+  maritalRegime:     'maritalRegime',
+  idType:            'idType',
+  idNumber:          'idNumber',
+  idIssued:          'idIssued',
+  idExpiry:          'idExpiry',
+  idIssuingAuth:     'idIssuingAuth',
+  legalStatus:       'legalStatus',
+  migraDocNumber:    'migraDocNumber',
+  curp:              'curpLabel',
+  rfc:               'rfcLabel',
+  ssn:               'ssnUS',
+  email:             'email',
+  cellPhone:         'cellPhone',
+  homePhone:         'homePhone',
+  addressMX:         'addressMX',
+  addressAbroad:     'addressAbroad',
+  occupation:        'employmentStatus',
+  occupationDetail:  'occupationDetail',
+  positionInCompany: 'position',
+  companyName:       'companyName',
+  companyType:       'companyType',
+  companyPhone:      'companyPhone',
+  companyAddress:    'companyAddress',
+  sexo:                   'sexo',
+  numHijos:               'numHijos',
+  idiomaMaterno:          'idiomaMaterno',
+  hablaEspanol:           'hablaEspanol',
+  religion:               'religion',
+  raza:                   'raza',
+  escolaridad:            'escolaridad',
+  areaConocimiento:       'areaConocimiento',
+  estatura:               'labelEstatura',
+  complexion:             'complexion',
+  peso:                   'labelPeso',
+  senas:                  'senas',
+  paisResidenciaAnterior: 'paisAnterior',
+  tipoPoblacion:          'tipoPoblacion',
+  nombrePoblacion:        'nombrePoblacion',
+  estadoProvincia:        'estadoProvincia',
+  actividadPrincipal:     'actividadPrincipal',
+  ingresoMensualUSD:      'ingresoUSD',
+  sectorTrabajo:          'sectorTrabajo',
+  situacionTrabajo:       'situacionTrabajo',
+  ocupacionTrabajo:       'ocupacionTrabajo',
+  anosExpMexico:          'anosExp',
+  periodoContratacion:    'periodoContrat',
+  ref1Name:          'refName',
+  ref1Phone:         'refPhone',
+  ref1Email:         'email',
+  ref1Address:       'refAddress',
+  ref2Name:          'refName',
+  ref2Phone:         'refPhone',
+  ref2Email:         'email',
+  ref2Address:       'refAddress',
 }
 
 // ─── SECTION GROUPING ────────────────────────────────────────────────
 const SECTIONS = [
   {
-    title: '1. PERSONAL INFORMATION',
+    titleKey: 'sec1',
     keys: ['fullName', 'dob', 'pob', 'nationality', 'maritalStatus', 'maritalRegime'],
   },
   {
-    title: '2. IDENTIFICATION DOCUMENT',
+    titleKey: 'sec2',
     keys: ['idType', 'idNumber', 'idIssued', 'idExpiry', 'idIssuingAuth', 'legalStatus', 'migraDocNumber'],
   },
   {
-    title: '3. TAX IDENTIFIERS',
+    titleKey: 'sec3',
     keys: ['curp', 'rfc', 'ssn'],
   },
   {
-    title: '4. CONTACT',
+    titleKey: 'sec4',
     keys: ['email', 'cellPhone', 'homePhone'],
   },
   {
-    title: '5. ADDRESS / DOMICILIO',
+    titleKey: 'sec5',
     keys: ['addressMX', 'addressAbroad'],
   },
   {
-    title: '6. OCCUPATION / EMPRESA',
+    titleKey: 'sec6',
     keys: ['occupation', 'occupationDetail', 'positionInCompany', 'companyName', 'companyType', 'companyPhone', 'companyAddress'],
     optional: false,
   },
   {
-    title: '9. FORMATO BÁSICO MIGRACIÓN / INM BASIC FORM',
+    titleKey: 'sec9',
     keys: ['sexo','numHijos','idiomaMaterno','hablaEspanol','religion','raza','escolaridad','areaConocimiento',
            'estatura','complexion','peso','senas',
            'paisResidenciaAnterior','tipoPoblacion','nombrePoblacion','estadoProvincia',
@@ -133,12 +135,12 @@ const SECTIONS = [
     optional: true,
   },
   {
-    title: '7. PERSONAL REFERENCE 1 / REFERENCIA PERSONAL 1',
+    titleKey: 'sec7',
     keys: ['ref1Name', 'ref1Phone', 'ref1Email', 'ref1Address'],
     optional: true,
   },
   {
-    title: '8. PERSONAL REFERENCE 2 / REFERENCIA PERSONAL 2',
+    titleKey: 'sec8',
     keys: ['ref2Name', 'ref2Phone', 'ref2Email', 'ref2Address'],
     optional: true,
   },
@@ -213,7 +215,10 @@ function spacer(pts = 80) {
 
 // ─── MAIN BUILDER ────────────────────────────────────────────────────
 
-function buildDocument(data) {
+function buildDocument(data, lang) {
+  const TT = (key) => i18nT(key, lang)
+  const getLabel = (key) => TT(LABEL_MAP[key]) || key
+
   const today = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })
   const children = []
 
@@ -258,10 +263,10 @@ function buildDocument(data) {
       const hasData = sec.keys.some(k => data[k] && String(data[k]).trim())
       if (!hasData) return
     }
-    children.push(sectionHeader(sec.title))
+    children.push(sectionHeader(TT(sec.titleKey)))
 
     const rows = sec.keys.map((key, idx) => {
-      const label = FIELD_LABELS[key] || key
+      const label = getLabel(key)
       const value = data[key] || ''
       return fieldRow(label, value, idx % 2 === 1)
     })
@@ -378,7 +383,8 @@ function buildDocument(data) {
 export async function POST(request) {
   try {
     const data = await request.json()
-    const doc = buildDocument(data)
+    const lang = data.lang || 'es'
+    const doc = buildDocument(data, lang)
     const buffer = await Packer.toBuffer(doc)
 
     return new NextResponse(buffer, {
