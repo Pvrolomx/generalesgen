@@ -495,16 +495,25 @@ function buildDocument(data, lang) {
       const hasData = sec.keys.some(k => data[k] && String(data[k]).trim())
       if (!hasData) return
     }
+    // Keys that should not render an empty row (e.g. blank for Mexicans).
+    const SKIP_IF_EMPTY = ['legalStatus', 'migraDocNumber', 'ssn', 'addressAbroad']
+    const rows = sec.keys
+      .filter(key => {
+        if (!SKIP_IF_EMPTY.includes(key)) return true
+        return !!(data[key] && String(data[key]).trim())
+      })
+      .map((key, idx) => {
+        const label = getLabel(key)
+        const raw = key === 'idIssuingAuth'
+          ? normalizeAuthority(data[key] || '')
+          : resolveValue(data[key] || '', lang, data.sexo)
+        return fieldRow(label, raw, idx % 2 === 1)
+      })
+
+    // Don't emit an orphan header if every key was filtered out.
+    if (rows.length === 0) return
+
     children.push(sectionHeader(TT(sec.titleKey)))
-
-    const rows = sec.keys.map((key, idx) => {
-      const label = getLabel(key)
-      const raw = key === 'idIssuingAuth'
-        ? normalizeAuthority(data[key] || '')
-        : resolveValue(data[key] || '', lang, data.sexo)
-      return fieldRow(label, raw, idx % 2 === 1)
-    })
-
     children.push(dataTable(rows), spacer(40))
   })
 
