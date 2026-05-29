@@ -1,9 +1,81 @@
 import { NextResponse } from 'next/server'
-import { T as i18nT } from '../../i18n'
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign,
 } from 'docx'
+
+
+// ─── INLINE i18n (ES / EN / FR) ──────────────────────────────────────
+const TRANSLATIONS = {
+  sec1: { es:'1. INFORMACIÓN PERSONAL', en:'1. PERSONAL INFORMATION', fr:'1. INFORMATIONS PERSONNELLES' },
+  sec2: { es:'2. DOCUMENTOS DE IDENTIFICACIÓN', en:'2. IDENTIFICATION DOCUMENTS', fr:"2. DOCUMENTS D'IDENTIFICATION" },
+  sec3: { es:'3. IDENTIFICADORES FISCALES', en:'3. TAX IDENTIFIERS', fr:'3. IDENTIFIANTS FISCAUX' },
+  sec4: { es:'4. INFORMACIÓN DE CONTACTO', en:'4. CONTACT INFORMATION', fr:'4. COORDONNÉES' },
+  sec5: { es:'5. DOMICILIO', en:'5. ADDRESS', fr:'5. ADRESSE' },
+  sec6: { es:'6. OCUPACIÓN / EMPRESA', en:'6. OCCUPATION / COMPANY', fr:'6. PROFESSION / ENTREPRISE' },
+  sec7: { es:'7. REFERENCIA PERSONAL 1', en:'7. PERSONAL REFERENCE 1', fr:'7. RÉFÉRENCE PERSONNELLE 1' },
+  sec8: { es:'8. REFERENCIA PERSONAL 2', en:'8. PERSONAL REFERENCE 2', fr:'8. RÉFÉRENCE PERSONNELLE 2' },
+  sec9: { es:'9. FORMATO BÁSICO — MIGRACIÓN / INM', en:'9. INM BASIC FORM — MIGRATION', fr:'9. FORMULAIRE DE BASE — MIGRATION / INM' },
+  firstName:       { es:'Nombre(s)', en:'First Name(s)', fr:'Prénom(s)' },
+  lastName:        { es:'Apellido(s)', en:'Last Name(s)', fr:'Nom(s) de famille' },
+  dob:             { es:'Fecha de Nacimiento', en:'Date of Birth', fr:'Date de naissance' },
+  pob:             { es:'Lugar de Nacimiento', en:'Place of Birth', fr:'Lieu de naissance' },
+  nationality:     { es:'Nacionalidad', en:'Nationality', fr:'Nationalité' },
+  maritalStatus:   { es:'Estado Civil', en:'Marital Status', fr:'État civil' },
+  maritalRegime:   { es:'Régimen Matrimonial', en:'Marital Regime', fr:'Régime matrimonial' },
+  idType:          { es:'Tipo de Identificación', en:'ID Type', fr:"Type d'identification" },
+  idNumber:        { es:'Número de Documento', en:'ID Number', fr:'Numéro de document' },
+  idIssued:        { es:'Fecha de Emisión', en:'Date Issued', fr:'Date de délivrance' },
+  idExpiry:        { es:'Fecha de Vencimiento', en:'Expiration Date', fr:"Date d'expiration" },
+  idIssuingAuth:   { es:'Autoridad Emisora', en:'Issuing Authority', fr:'Autorité émettrice' },
+  legalStatus:     { es:'Condición Migratoria en México', en:'Legal Status in Mexico', fr:'Statut migratoire au Mexique' },
+  migraDocNumber:  { es:'No. Documento Migratorio', en:'Migration Document No.', fr:'No. document migratoire' },
+  curpLabel:       { es:'CURP', en:'CURP', fr:'CURP' },
+  rfcLabel:        { es:'RFC', en:'RFC', fr:'RFC' },
+  ssnUS:           { es:'Núm. Seguro Social (SSN)', en:'Social Security Number (SSN)', fr:"Numéro d'assurance (SSN)" },
+  email:           { es:'Correo electrónico', en:'Email', fr:'Courriel' },
+  cellPhone:       { es:'Celular', en:'Cell Phone', fr:'Cellulaire' },
+  homePhone:       { es:'Tel. Casa', en:'Home Phone', fr:'Tél. domicile' },
+  addressMX:       { es:'Domicilio en México', en:'Address in Mexico', fr:'Adresse au Mexique' },
+  addressAbroad:   { es:'Domicilio en el Extranjero', en:'Address Abroad', fr:"Adresse à l'étranger" },
+  employmentStatus:{ es:'Situación Laboral', en:'Employment Status', fr:'Situation professionnelle' },
+  occupationDetail:{ es:'Ocupación', en:'Occupation', fr:'Profession' },
+  position:        { es:'Puesto', en:'Position', fr:'Poste' },
+  companyName:     { es:'Nombre de la Empresa', en:'Company Name', fr:"Nom de l'entreprise" },
+  companyType:     { es:'Tipo de Empresa', en:'Type of Company', fr:"Type d'entreprise" },
+  companyPhone:    { es:'Tel. Empresa', en:'Company Phone', fr:'Tél. entreprise' },
+  companyAddress:  { es:'Domicilio Empresa', en:'Company Address', fr:"Adresse de l'entreprise" },
+  refName:         { es:'Nombre', en:'Name', fr:'Nom' },
+  refPhone:        { es:'Teléfono', en:'Phone', fr:'Téléphone' },
+  refAddress:      { es:'Domicilio', en:'Address', fr:'Adresse' },
+  sexo:            { es:'Sexo', en:'Sex', fr:'Sexe' },
+  numHijos:        { es:'Número de hijos', en:'No. of Children', fr:"Nombre d'enfants" },
+  idiomaMaterno:   { es:'Idioma materno', en:'Native Language', fr:'Langue maternelle' },
+  hablaEspanol:    { es:'¿Habla español?', en:'Speaks Spanish?', fr:'Parle espagnol?' },
+  religion:        { es:'Religión', en:'Religion', fr:'Religion' },
+  raza:            { es:'Raza', en:'Race', fr:'Race' },
+  escolaridad:     { es:'Nivel de estudios', en:'Education Level', fr:"Niveau d'études" },
+  areaConocimiento:{ es:'Área de conocimiento', en:'Field of Study', fr:"Domaine d'études" },
+  labelEstatura:   { es:'Estatura (m)', en:'Height (m)', fr:'Taille (m)' },
+  complexion:      { es:'Complexión', en:'Build', fr:'Corpulence' },
+  labelPeso:       { es:'Peso (kg)', en:'Weight (kg)', fr:'Poids (kg)' },
+  senas:           { es:'Señas particulares', en:'Distinguishing marks', fr:'Signes particuliers' },
+  paisAnterior:    { es:'País de residencia anterior', en:'Prior country of residence', fr:'Pays de résidence antérieur' },
+  tipoPoblacion:   { es:'Tipo de población', en:'Type of area', fr:'Type de localité' },
+  nombrePoblacion: { es:'Nombre de la ciudad/pueblo', en:'City or Town', fr:'Ville ou bourg' },
+  estadoProvincia: { es:'Estado / Provincia', en:'State or Province', fr:'État ou Province' },
+  actividadPrincipal:{ es:'Actividad principal', en:'Primary activity', fr:'Activité principale' },
+  ingresoUSD:      { es:'Ingreso mensual neto (USD)', en:'Monthly net income (USD)', fr:'Revenu mensuel net (USD)' },
+  sectorTrabajo:   { es:'Sector de trabajo', en:'Work sector', fr:"Secteur d'activité" },
+  situacionTrabajo:{ es:'Situación en el trabajo', en:'Employment type', fr:'Situation professionnelle' },
+  ocupacionTrabajo:{ es:'Tipo de ocupación', en:'Occupation type', fr:"Type d'occupation" },
+  anosExp:         { es:'Años exp. laboral en México', en:'Work exp. years in Mexico', fr:"Années d'expérience au Mexique" },
+  periodoContrat:  { es:'Período de contratación (meses)', en:'Contract period (months)', fr:'Période de contrat (mois)' },
+}
+function i18nT(key, lang) {
+  const l = lang || 'es'
+  return TRANSLATIONS[key]?.[l] ?? TRANSLATIONS[key]?.['es'] ?? key
+}
 
 // ─── PAGE SETUP (A4) ─────────────────────────────────────────────────
 const PAGE_W     = 11906
