@@ -110,6 +110,7 @@ export default function GeneralesGen(){
   const isResident=legalStatus==='RT'||legalStatus==='RP'
   const showRef1=!!data.showRef1
   const showRef2=!!data.showRef2
+  const showAddressAbroad=!!data.showAddressAbroad
   const showMigra=!!data.showMigra
   const isWorking=(data.actividadPrincipal||'').includes('Working')||(data.actividadPrincipal||'')==='Trabajar'
 
@@ -293,7 +294,14 @@ export default function GeneralesGen(){
           {/* ── 5. ADDRESS */}
           <SecHdr label={T('sec5')}/>
           <Row1><Field fkey="addressMX" label={T('addressMX')} placeholder={T('phAddressMX')} value={f('addressMX')} onChange={set} type="textarea"/></Row1>
-          {isForeign&&<Row1><Field fkey="addressAbroad" label={T('addressAbroad')} placeholder={T('phAddressAbroad')} value={f('addressAbroad')} onChange={set} type="textarea"/></Row1>}
+          {!isForeign&&(
+            <button type="button"
+              style={{...S.btnSec,marginTop:8,color:C.gold,borderColor:'rgba(201,168,76,0.4)'}}
+              onClick={()=>set('showAddressAbroad',!showAddressAbroad)}>
+              {showAddressAbroad?'− ':'+ '}{lang==='en'?'Add address abroad':lang==='fr'?'Ajouter une adresse à l\u2019étranger':'Agregar domicilio en el extranjero'}
+            </button>
+          )}
+          {(isForeign||showAddressAbroad)&&<Row1><Field fkey="addressAbroad" label={T('addressAbroad')} placeholder={T('phAddressAbroad')} value={f('addressAbroad')} onChange={set} type="textarea"/></Row1>}
 
           {/* ── 6. OCCUPATION */}
           <SecHdr label={T('sec6')}/>
