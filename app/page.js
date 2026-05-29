@@ -219,6 +219,11 @@ export default function GeneralesGen(){
                 value={f('maritalRegime')} onChange={set}/>
             </Row1>
           )}
+          <Row1>
+            <Field fkey="sexo" label={T('sexo')} type="select"
+              options={[optBlank(),opt('M',T('optMale')),opt('F',T('optFemale'))]}
+              value={f('sexo')} onChange={set}/>
+          </Row1>
 
           {/* ── 2. ID */}
           <SecHdr label={T('sec2')}/>

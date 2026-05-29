@@ -283,13 +283,36 @@ const VALUE_LABELS = {
   Services:    { es:'Servicios', en:'Services', fr:'Services' },
   Industrial:  { es:'Industrial', en:'Industrial', fr:'Industriel' },
 }
-function resolveValue(value, lang) {
+// Gendered marital-status forms by sexo (M/F). Used only when sexo is known;
+// otherwise resolveValue falls back to the neutral "(a)" forms in VALUE_LABELS.
+const GENDERED_MARITAL = {
+  Single:   { M:{es:'Soltero',en:'Single',fr:'Célibataire'},      F:{es:'Soltera',en:'Single',fr:'Célibataire'} },
+  Married:  { M:{es:'Casado',en:'Married',fr:'Marié'},            F:{es:'Casada',en:'Married',fr:'Mariée'} },
+  Divorced: { M:{es:'Divorciado',en:'Divorced',fr:'Divorcé'},     F:{es:'Divorciada',en:'Divorced',fr:'Divorcée'} },
+  Widowed:  { M:{es:'Viudo',en:'Widowed',fr:'Veuf'},              F:{es:'Viuda',en:'Widowed',fr:'Veuve'} },
+  CommonLaw:{ M:{es:'Unión libre',en:'Common Law',fr:'Union de fait'}, F:{es:'Unión libre',en:'Common Law',fr:'Union de fait'} },
+}
+function resolveValue(value, lang, sexo) {
   if (value == null) return ''
   const v = String(value).trim()
   if (!v) return ''
+  // Gendered concordance for marital status when sexo is known.
+  if ((sexo === 'M' || sexo === 'F') && GENDERED_MARITAL[v]) {
+    const g = GENDERED_MARITAL[v][sexo]
+    return g[lang] ?? g['es'] ?? v
+  }
   const entry = VALUE_LABELS[v]
   if (!entry) return v               // safe fallback: print as-is
   return entry[lang] ?? entry['es'] ?? v
+}
+// Gender-aware declaration text. Spanish prepends "El suscrito"/"La suscrita";
+// EN/FR keep their neutral wording. Neutral fallback when sexo is unknown.
+function declarationText(lang, sexo) {
+  if (lang === 'es') {
+    const subj = sexo === 'M' ? 'El suscrito declara' : sexo === 'F' ? 'La suscrita declara' : 'Declaro'
+    return subj + ' bajo protesta de decir verdad que toda la información aquí proporcionada es verídica y correcta.'
+  }
+  return i18nT('declText', lang)
 }
 
 // ─── SECTION GROUPING ────────────────────────────────────────────────
@@ -461,7 +484,7 @@ function buildDocument(data, lang) {
 
     const rows = sec.keys.map((key, idx) => {
       const label = getLabel(key)
-      const value = resolveValue(data[key] || '', lang)
+      const value = resolveValue(data[key] || '', lang, data.sexo)
       return fieldRow(label, value, idx % 2 === 1)
     })
 
@@ -479,7 +502,7 @@ function buildDocument(data, lang) {
     new Paragraph({
       spacing: { before: 8, after: 100 },
       children: [new TextRun({
-        text: TT('declText'),
+        text: declarationText(lang, data.sexo),
         font: FONT, size: 14, color: GRAY, italics: true,
       })],
     }),
