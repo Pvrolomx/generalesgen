@@ -368,27 +368,24 @@ export default function GeneralesGen(){
             <>
               <SubLabel>{T('subPersonal')}</SubLabel>
               <Row2>
-                <Field fkey="sexo" label={T('sexo')} type="select"
-                  options={[optBlank(),opt('M',T('optMale')),opt('F',T('optFemale'))]}
-                  value={f('sexo')} onChange={set}/>
                 <Field fkey="numHijos" label={T('numHijos')} placeholder="0" value={f('numHijos')} onChange={set}/>
+                <Field fkey="idiomaMaterno" label={T('idiomaMaterno')} placeholder={T('phIdioma')} value={f('idiomaMaterno')} onChange={set}/>
               </Row2>
               <Row2>
-                <Field fkey="idiomaMaterno" label={T('idiomaMaterno')} placeholder={T('phIdioma')} value={f('idiomaMaterno')} onChange={set}/>
                 <Field fkey="hablaEspanol" label={T('hablaEspanol')} type="select"
                   options={[optBlank(),opt('Si',T('optSiYes')),opt('No',T('optNoNo')),opt('Basico',T('optBasico'))]}
                   value={f('hablaEspanol')} onChange={set}/>
+                <Field fkey="religion" label={T('religion')} placeholder={T('phReligion')} value={f('religion')} onChange={set}/>
               </Row2>
               <Row2>
-                <Field fkey="religion" label={T('religion')} placeholder={T('phReligion')} value={f('religion')} onChange={set}/>
                 <Field fkey="raza" label={T('raza')} type="select"
                   options={[optBlank(),opt('Blanca',T('optBlanca')),opt('Amarilla',T('optAmarilla')),opt('Negra',T('optNegra')),opt('Nativa',T('optNativa')),opt('Mestiza',T('optMestiza'))]}
                   value={f('raza')} onChange={set}/>
-              </Row2>
-              <Row2>
                 <Field fkey="escolaridad" label={T('escolaridad')} type="select"
                   options={[optBlank(),opt('None',T('optEduNone')),opt('Prim',T('optEduPrim')),opt('Sec',T('optEduSec')),opt('Prep',T('optEduPrep')),opt('Lic',T('optEduLic')),opt('Mae',T('optEduMae')),opt('Doc',T('optEduDoc')),opt('Pos',T('optEduPos'))]}
                   value={f('escolaridad')} onChange={set}/>
+              </Row2>
+              <Row2>
                 <Field fkey="areaConocimiento" label={T('areaConocimiento')} placeholder={T('phArea')} value={f('areaConocimiento')} onChange={set}/>
               </Row2>
 
