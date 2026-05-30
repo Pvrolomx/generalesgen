@@ -19,7 +19,7 @@ const DEMO_DATA={
   curp:'ROGR660427HJCMRL00',rfc:'ROGR660427SK8',
   email:'pvrolomx@yahoo.com.mx',cellPhone:'322 111 0294',
   addressMX:'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
-  occupation:'Employed',occupationDetail:'Attorney / Abogado',positionInCompany:'Auto Empleado / Self-Employed',
+  occupation:'Employed',occupationDetail:'Abogado',positionInCompany:'Auto Empleado / Self-Employed',
   companyName:'Expat Advisor MX',companyType:'Consultoría Inmobiliaria',companyPhone:'322 111 0294',
   companyAddress:'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
   showRef1:true,ref1Name:'Claudia Rebeca Castillo Soto',ref1Address:'Paseo del Arque 59, Las Ceibas, Bahía de Banderas, Nayarit, 63735',ref1Phone:'322 306 8482',ref1Email:'claudia@castlesolutions.biz',
