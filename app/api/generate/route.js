@@ -359,7 +359,7 @@ const SECTIONS = [
   },
   {
     titleKey: 'sec9',
-    keys: ['sexo','numHijos','idiomaMaterno','hablaEspanol','religion','raza','escolaridad','areaConocimiento',
+    keys: ['numHijos','idiomaMaterno','hablaEspanol','religion','raza','escolaridad','areaConocimiento',
            'estatura','complexion','peso','senas',
            'paisResidenciaAnterior','tipoPoblacion','nombrePoblacion','estadoProvincia',
            'actividadPrincipal','ingresoMensualUSD','sectorTrabajo','situacionTrabajo','ocupacionTrabajo',
