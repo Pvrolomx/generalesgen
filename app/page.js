@@ -14,7 +14,7 @@ function lbsToKg(lbs){const v=parseFloat(lbs);return v>0?(v*0.453592).toFixed(1)
 
 const DEMO_DATA={
   firstName:'Rolando',lastName:'Romero García',dob:'27/04/1966',pob:'Puerto Vallarta, Jalisco',
-  nationality:'Mexicana',maritalStatus:'Married',maritalRegime:'SepProp',sexo:'M',
+  nationality:'Mexicana',maritalStatus:'Married',maritalRegime:'SepProp',sexo:'M',spouseName:'Claudia Rebeca Castillo Soto',
   idType:'INE',idNumber:'1974076048195',idIssued:'2018',idExpiry:'2028',idIssuingAuth:'Mexican Government',
   curp:'ROGR660427HJCMRL00',rfc:'ROGR660427SK8',
   email:'pvrolomx@yahoo.com.mx',cellPhone:'322 111 0294',
@@ -24,6 +24,7 @@ const DEMO_DATA={
   companyAddress:'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
   showRef1:true,ref1Name:'Claudia Rebeca Castillo Soto',ref1Address:'Paseo del Arque 59, Las Ceibas, Bahía de Banderas, Nayarit, 63735',ref1Phone:'322 306 8482',ref1Email:'claudia@castlesolutions.biz',
   showRef2:true,ref2Name:'Sergio Arturo Miramontes Macías',ref2Address:'Bolivia 1008, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',ref2Phone:'322 150 6996',ref2Email:'smiramontesm@yahoo.com',
+  showFidei:true,fidei1Name:'Claudia Rebeca Castillo Soto',fidei1Relacion:'Conyuge',fidei1Porcentaje:'100',
 }
 
 const S={
@@ -112,6 +113,8 @@ export default function GeneralesGen(){
   const showRef2=!!data.showRef2
   const showAddressAbroad=!!data.showAddressAbroad
   const showMigra=!!data.showMigra
+  const showFidei=!!data.showFidei
+  const fideiSum=[1,2,3,4].reduce((s,n)=>s+(parseFloat(data['fidei'+n+'Porcentaje'])||0),0)
   const isWorking=(data.actividadPrincipal||'').includes('Working')||(data.actividadPrincipal||'')==='Trabajar'
 
   const filled=Object.keys(data).filter(k=>!k.startsWith('_')&&data[k]&&String(data[k]).trim()).length
@@ -327,6 +330,47 @@ export default function GeneralesGen(){
                 <Field fkey="companyPhone" label={T('companyPhone')} placeholder="+52 322 000 0000"   value={f('companyPhone')} onChange={set} type="tel"/>
               </Row2>
               <Row1><Field fkey="companyAddress" label={T('companyAddress')} placeholder={T('phCompanyAddr')} value={f('companyAddress')} onChange={set} type="textarea"/></Row1>
+            </>
+          )}
+
+          {/* ── 10. FIDEICOMISARIOS SUSTITUTOS */}
+          <ToggleSecHdr label={T('sec10')} show={showFidei} onToggle={()=>set('showFidei',!showFidei)} color="#5BA88C"/>
+          <div style={{marginBottom:16}}/>
+          {showFidei&&(
+            <>
+              {[1,2,3,4].map(n=>{
+                // Sustituto 1 siempre visible; 2/3/4 solo si el anterior tiene nombre.
+                const prevHasName = n===1 || !!(data['fidei'+(n-1)+'Name']&&String(data['fidei'+(n-1)+'Name']).trim())
+                if(!prevHasName) return null
+                return (
+                  <div key={n} style={{marginBottom:10,paddingBottom:10,borderBottom:n<4?'1px solid rgba(91,168,140,0.15)':'none'}}>
+                    <SubLabel>{T('fideiSub')} {n}</SubLabel>
+                    {n===1&&isMarried&&data.spouseName&&String(data.spouseName).trim()&&(
+                      <button type="button"
+                        style={{...S.btnSec,marginBottom:10,color:'#5BA88C',borderColor:'rgba(91,168,140,0.4)',fontSize:11,padding:'6px 14px'}}
+                        onClick={()=>{set('fidei1Name',data.spouseName);set('fidei1Relacion','Conyuge')}}>
+                        {T('btnLoadSpouse')}
+                      </button>
+                    )}
+                    <Row1>
+                      <Field fkey={'fidei'+n+'Name'} label={T('fideiName')} placeholder={T('phFideiName')} value={f('fidei'+n+'Name')} onChange={set}/>
+                    </Row1>
+                    <Row2>
+                      <Field fkey={'fidei'+n+'Relacion'} label={T('fideiRelacion')} type="select"
+                        options={[optBlank(),opt('Conyuge',T('optRelConyuge')),opt('Hijo',T('optRelHijo')),opt('Padre',T('optRelPadre')),opt('Hermano',T('optRelHermano')),opt('Otro',T('optRelOtro'))]}
+                        value={f('fidei'+n+'Relacion')} onChange={set}/>
+                      <Field fkey={'fidei'+n+'Porcentaje'} label={T('fideiPorcentaje')} placeholder="0" type="number" value={f('fidei'+n+'Porcentaje')} onChange={set}/>
+                    </Row2>
+                  </div>
+                )
+              })}
+              {/* Indicador de suma de porcentajes (informativo) */}
+              {fideiSum>0&&(
+                <div style={{display:'flex',alignItems:'center',gap:8,marginTop:4,fontSize:12,fontWeight:'bold',
+                  color:fideiSum===100?'#5BA88C':'#E8C96A'}}>
+                  <span>{fideiSum===100?T('fideiSumOk'):`${T('fideiSumLabel')}: ${fideiSum}%`}</span>
+                </div>
+              )}
             </>
           )}
 

@@ -19,6 +19,7 @@ const TRANSLATIONS = {
   sec7: { es:'7. REFERENCIA PERSONAL 1', en:'7. PERSONAL REFERENCE 1', fr:'7. RÉFÉRENCE PERSONNELLE 1' },
   sec8: { es:'8. REFERENCIA PERSONAL 2', en:'8. PERSONAL REFERENCE 2', fr:'8. RÉFÉRENCE PERSONNELLE 2' },
   sec9: { es:'9. FORMATO BÁSICO — MIGRACIÓN / INM', en:'9. INM BASIC FORM — MIGRATION', fr:'9. FORMULAIRE DE BASE — MIGRATION / INM' },
+  sec10: { es:'10. FIDEICOMISARIO(S) SUSTITUTO(S)', en:'10. SUBSTITUTE TRUST BENEFICIARY(IES)', fr:'10. BÉNÉFICIAIRE(S) SUBSTITUT(S) DE LA FIDUCIE' },
   firstName:       { es:'Nombre(s)', en:'First Name(s)', fr:'Prénom(s)' },
   lastName:        { es:'Apellido(s)', en:'Last Name(s)', fr:'Nom(s) de famille' },
   dob:             { es:'Fecha de Nacimiento', en:'Date of Birth', fr:'Date de naissance' },
@@ -75,6 +76,11 @@ const TRANSLATIONS = {
   ocupacionTrabajo:{ es:'Tipo de ocupación', en:'Occupation type', fr:"Type d'occupation" },
   anosExp:         { es:'Años exp. laboral en México', en:'Work exp. years in Mexico', fr:"Années d'expérience au Mexique" },
   periodoContrat:  { es:'Período de contratación (meses)', en:'Contract period (months)', fr:'Période de contrat (mois)' },
+  // ── Fideicomisarios sustitutos (sec 10). Labels per-N se construyen en el loop.
+  fideiSub:        { es:'Sustituto', en:'Substitute', fr:'Substitut' },
+  fideiNameL:      { es:'Nombre', en:'Name', fr:'Nom' },
+  fideiRelacionL:  { es:'Parentesco', en:'Relationship', fr:'Lien de parenté' },
+  fideiPorcentajeL:{ es:'Porcentaje de derechos', en:'Share (%)', fr:'Pourcentage' },
   // ── FIXED DOCUMENT STRINGS (institutional text only; Rolo's fixed data
   //    — cédula, name, URL — stays inline in the builder, untranslated)
   docTitle:  {
@@ -284,6 +290,11 @@ const VALUE_LABELS = {
   Sales:       { es:'Comerciante', en:'Sales', fr:'Commerçant(e)' },
   Services:    { es:'Servicios', en:'Services', fr:'Services' },
   Industrial:  { es:'Industrial', en:'Industrial', fr:'Industriel' },
+  // fideicomisario relationship values
+  Conyuge:     { es:'Cónyuge', en:'Spouse', fr:'Conjoint(e)' },
+  Hijo:        { es:'Hijo(a)', en:'Child', fr:'Enfant' },
+  Padre:       { es:'Padre/Madre', en:'Parent', fr:'Parent' },
+  Hermano:     { es:'Hermano(a)', en:'Sibling', fr:'Frère/Sœur' },
 }
 // Gendered marital-status forms by sexo (M/F). Used only when sexo is known;
 // otherwise resolveValue falls back to the neutral "(a)" forms in VALUE_LABELS.
@@ -366,6 +377,14 @@ const SECTIONS = [
            'paisResidenciaAnterior','tipoPoblacion','nombrePoblacion','estadoProvincia',
            'actividadPrincipal','ingresoMensualUSD','sectorTrabajo','situacionTrabajo','ocupacionTrabajo',
            'anosExpMexico','periodoContratacion'],
+    optional: true,
+  },
+  {
+    titleKey: 'sec10',
+    keys: ['fidei1Name','fidei1Relacion','fidei1Porcentaje',
+           'fidei2Name','fidei2Relacion','fidei2Porcentaje',
+           'fidei3Name','fidei3Relacion','fidei3Porcentaje',
+           'fidei4Name','fidei4Relacion','fidei4Porcentaje'],
     optional: true,
   },
   {
@@ -499,13 +518,27 @@ function buildDocument(data, lang) {
     }
     // Keys that should not render an empty row (e.g. blank for Mexicans).
     const SKIP_IF_EMPTY = ['legalStatus', 'migraDocNumber', 'ssn', 'addressAbroad', 'spouseName']
+    // Dynamic label for fideicomisario keys: "Sustituto N — <campo>".
+    const fideiLabel = (key) => {
+      const m = key.match(/^fidei(\d)(Name|Relacion|Porcentaje)$/)
+      if (!m) return null
+      const sub = `${TT('fideiSub')} ${m[1]}`
+      const field = m[2] === 'Name' ? TT('fideiNameL') : m[2] === 'Relacion' ? TT('fideiRelacionL') : TT('fideiPorcentajeL')
+      return `${sub} — ${field}`
+    }
     const rows = sec.keys
       .filter(key => {
+        // Fidei group skip: hide a substitute's 3 fields unless its name is set.
+        const fm = key.match(/^fidei(\d)/)
+        if (fm) {
+          const nameKey = `fidei${fm[1]}Name`
+          return !!(data[nameKey] && String(data[nameKey]).trim())
+        }
         if (!SKIP_IF_EMPTY.includes(key)) return true
         return !!(data[key] && String(data[key]).trim())
       })
       .map((key, idx) => {
-        const label = getLabel(key)
+        const label = fideiLabel(key) || getLabel(key)
         const raw = key === 'idIssuingAuth'
           ? normalizeAuthority(data[key] || '')
           : resolveValue(data[key] || '', lang, data.sexo)

@@ -58,6 +58,7 @@ export const T = {
   sec7: { es: '7. REFERENCIA PERSONAL 1', en: '7. PERSONAL REFERENCE 1', fr: '7. RÉFÉRENCE PERSONNELLE 1' },
   sec8: { es: '8. REFERENCIA PERSONAL 2', en: '8. PERSONAL REFERENCE 2', fr: '8. RÉFÉRENCE PERSONNELLE 2' },
   sec9: { es: '9. FORMATO BÁSICO — MIGRACIÓN / INM', en: '9. INM BASIC FORM — MIGRATION', fr: '9. FORMULAIRE DE BASE — MIGRATION / INM' },
+  sec10: { es: '10. FIDEICOMISARIO(S) SUSTITUTO(S)', en: '10. SUBSTITUTE TRUST BENEFICIARY(IES)', fr: '10. BÉNÉFICIAIRE(S) SUBSTITUT(S) DE LA FIDUCIE' },
 
   // ── SECTION 1 FIELDS
   firstName:    { es: 'Nombre(s)', en: 'First Name(s)', fr: 'Prénom(s)' },
@@ -155,6 +156,22 @@ export const T = {
   refPhone:       { es: 'Teléfono', en: 'Phone', fr: 'Téléphone' },
   refAddress:     { es: 'Domicilio', en: 'Address', fr: 'Adresse' },
   phRefAddress:   { es: 'Domicilio completo', en: 'Full address', fr: 'Adresse complète' },
+
+  // ── Fideicomisarios sustitutos (sec 10)
+  fideiName:       { es: 'Nombre completo', en: 'Full Name', fr: 'Nom complet' },
+  fideiRelacion:   { es: 'Parentesco / Relación', en: 'Relationship', fr: 'Lien de parenté' },
+  fideiPorcentaje: { es: 'Porcentaje (%)', en: 'Share (%)', fr: 'Pourcentage (%)' },
+  phFideiName:     { es: 'Nombre completo del sustituto', en: 'Substitute full name', fr: 'Nom complet du substitut' },
+  fideiSub:        { es: 'Sustituto', en: 'Substitute', fr: 'Substitut' },
+  btnLoadSpouse:   { es: '← Cargar cónyuge', en: '← Load spouse', fr: '← Charger conjoint(e)' },
+  btnAddFidei:     { es: '▼ Agregar sustituto', en: '▼ Add substitute', fr: '▼ Ajouter substitut' },
+  optRelConyuge:   { es: 'Cónyuge', en: 'Spouse', fr: 'Conjoint(e)' },
+  optRelHijo:      { es: 'Hijo(a)', en: 'Child', fr: 'Enfant' },
+  optRelPadre:     { es: 'Padre/Madre', en: 'Parent', fr: 'Parent' },
+  optRelHermano:   { es: 'Hermano(a)', en: 'Sibling', fr: 'Frère/Sœur' },
+  optRelOtro:      { es: 'Otro', en: 'Other', fr: 'Autre' },
+  fideiSumOk:      { es: '✓ 100%', en: '✓ 100%', fr: '✓ 100%' },
+  fideiSumLabel:   { es: 'Suma de porcentajes', en: 'Sum of shares', fr: 'Somme des pourcentages' },
 
   // ── SECTION 9 — FORMATO BÁSICO
   subPersonal:    { es: 'Datos personales', en: 'Personal data', fr: 'Données personnelles' },
