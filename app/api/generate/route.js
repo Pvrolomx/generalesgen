@@ -518,6 +518,10 @@ function buildDocument(data, lang) {
     }
     // Keys that should not render an empty row (e.g. blank for Mexicans).
     const SKIP_IF_EMPTY = ['legalStatus', 'migraDocNumber', 'ssn', 'addressAbroad', 'spouseName']
+    // Company-related keys: hidden when the client is retired/unemployed, even if
+    // stale values remain in the JSON from a prior "Employed" selection.
+    const COMPANY_KEYS = ['occupationDetail', 'positionInCompany', 'companyName', 'companyType', 'companyPhone', 'companyAddress']
+    const notWorking = data.occupation === 'Retired' || data.occupation === 'Unemployed'
     // Dynamic label for fideicomisario keys: "Sustituto N — <campo>".
     const fideiLabel = (key) => {
       const m = key.match(/^fidei(\d)(Name|Relacion|Porcentaje)$/)
@@ -528,6 +532,8 @@ function buildDocument(data, lang) {
     }
     const rows = sec.keys
       .filter(key => {
+        // Hide company fields for retired/unemployed clients (ignore stale JSON).
+        if (notWorking && COMPANY_KEYS.includes(key)) return false
         // Fidei group skip: hide a substitute's 3 fields unless its name is set.
         const fm = key.match(/^fidei(\d)/)
         if (fm) {
