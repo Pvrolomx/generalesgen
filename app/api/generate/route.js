@@ -26,6 +26,7 @@ const TRANSLATIONS = {
   nationality:     { es:'Nacionalidad', en:'Nationality', fr:'Nationalité' },
   maritalStatus:   { es:'Estado Civil', en:'Marital Status', fr:'État civil' },
   maritalRegime:   { es:'Régimen Matrimonial', en:'Marital Regime', fr:'Régime matrimonial' },
+  spouseName:      { es:'Nombre del Cónyuge', en:'Spouse Name', fr:'Nom du conjoint/de la conjointe' },
   idType:          { es:'Tipo de Identificación', en:'ID Type', fr:"Type d'identification" },
   idNumber:        { es:'Número de Documento', en:'ID Number', fr:'Numéro de document' },
   idIssued:        { es:'Fecha de Emisión', en:'Date Issued', fr:'Date de délivrance' },
@@ -133,6 +134,7 @@ const LABEL_MAP = {
   nationality:       'nationality',
   maritalStatus:     'maritalStatus',
   maritalRegime:     'maritalRegime',
+  spouseName:        'spouseName',
   idType:            'idType',
   idNumber:          'idNumber',
   idIssued:          'idIssued',
@@ -334,7 +336,7 @@ function normalizeAuthority(value) {
 const SECTIONS = [
   {
     titleKey: 'sec1',
-    keys: ['firstName', 'lastName', 'dob', 'pob', 'nationality', 'maritalStatus', 'maritalRegime'],
+    keys: ['firstName', 'lastName', 'dob', 'pob', 'nationality', 'maritalStatus', 'maritalRegime', 'spouseName'],
   },
   {
     titleKey: 'sec2',
@@ -496,7 +498,7 @@ function buildDocument(data, lang) {
       if (!hasData) return
     }
     // Keys that should not render an empty row (e.g. blank for Mexicans).
-    const SKIP_IF_EMPTY = ['legalStatus', 'migraDocNumber', 'ssn', 'addressAbroad']
+    const SKIP_IF_EMPTY = ['legalStatus', 'migraDocNumber', 'ssn', 'addressAbroad', 'spouseName']
     const rows = sec.keys
       .filter(key => {
         if (!SKIP_IF_EMPTY.includes(key)) return true

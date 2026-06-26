@@ -71,6 +71,8 @@ export const T = {
   nationality:  { es: 'Nacionalidad', en: 'Nationality', fr: 'Nationalité' },
   maritalStatus: { es: 'Estado Civil', en: 'Marital Status', fr: 'État civil' },
   maritalRegime: { es: 'Régimen Matrimonial', en: 'Marital Regime', fr: 'Régime matrimonial' },
+  spouseName:   { es: 'Nombre del Cónyuge', en: 'Spouse Name', fr: 'Nom du conjoint/de la conjointe' },
+  phSpouseName: { es: 'Nombre completo del cónyuge', en: 'Full name of spouse', fr: 'Nom complet du/de la conjoint(e)' },
 
   // Marital options
   optSingle:      { es: 'Soltero(a) / Single', en: 'Single / Soltero(a)', fr: 'Célibataire' },
