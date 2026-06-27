@@ -24,7 +24,7 @@ const DEMO_DATA={
   companyAddress:'Brasil 1434, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',
   showRef1:true,ref1Name:'Claudia Rebeca Castillo Soto',ref1Address:'Paseo del Arque 59, Las Ceibas, Bahía de Banderas, Nayarit, 63735',ref1Phone:'322 306 8482',ref1Email:'claudia@castlesolutions.biz',
   showRef2:true,ref2Name:'Sergio Arturo Miramontes Macías',ref2Address:'Bolivia 1008, 5 de Diciembre, Puerto Vallarta, Jalisco, 48350',ref2Phone:'322 150 6996',ref2Email:'smiramontesm@yahoo.com',
-  showFidei:true,fidei1Name:'Claudia Rebeca Castillo Soto',fidei1Relacion:'Conyuge',fidei1Porcentaje:'100',
+  showFidei:true,fidei1Name:'Claudia Rebeca Castillo Soto',fidei1Porcentaje:'100',
 }
 
 const S={
@@ -345,20 +345,8 @@ export default function GeneralesGen(){
                 return (
                   <div key={n} style={{marginBottom:10,paddingBottom:10,borderBottom:n<4?'1px solid rgba(91,168,140,0.15)':'none'}}>
                     <SubLabel>{T('fideiSub')} {n}</SubLabel>
-                    {n===1&&isMarried&&data.spouseName&&String(data.spouseName).trim()&&(
-                      <button type="button"
-                        style={{...S.btnSec,marginBottom:10,color:'#5BA88C',borderColor:'rgba(91,168,140,0.4)',fontSize:11,padding:'6px 14px'}}
-                        onClick={()=>{set('fidei1Name',data.spouseName);set('fidei1Relacion','Conyuge')}}>
-                        {T('btnLoadSpouse')}
-                      </button>
-                    )}
-                    <Row1>
-                      <Field fkey={'fidei'+n+'Name'} label={T('fideiName')} placeholder={T('phFideiName')} value={f('fidei'+n+'Name')} onChange={set}/>
-                    </Row1>
                     <Row2>
-                      <Field fkey={'fidei'+n+'Relacion'} label={T('fideiRelacion')} type="select"
-                        options={[optBlank(),opt('Conyuge',T('optRelConyuge')),opt('Hijo',T('optRelHijo')),opt('Padre',T('optRelPadre')),opt('Hermano',T('optRelHermano')),opt('Otro',T('optRelOtro'))]}
-                        value={f('fidei'+n+'Relacion')} onChange={set}/>
+                      <Field fkey={'fidei'+n+'Name'} label={T('fideiName')} placeholder={T('phFideiName')} value={f('fidei'+n+'Name')} onChange={set}/>
                       <Field fkey={'fidei'+n+'Porcentaje'} label={T('fideiPorcentaje')} placeholder="0" type="number" value={f('fidei'+n+'Porcentaje')} onChange={set}/>
                     </Row2>
                   </div>

@@ -79,7 +79,6 @@ const TRANSLATIONS = {
   // ── Fideicomisarios sustitutos (sec 10). Labels per-N se construyen en el loop.
   fideiSub:        { es:'Sustituto', en:'Substitute', fr:'Substitut' },
   fideiNameL:      { es:'Nombre', en:'Name', fr:'Nom' },
-  fideiRelacionL:  { es:'Parentesco', en:'Relationship', fr:'Lien de parenté' },
   fideiPorcentajeL:{ es:'Porcentaje de derechos', en:'Share (%)', fr:'Pourcentage' },
   // ── FIXED DOCUMENT STRINGS (institutional text only; Rolo's fixed data
   //    — cédula, name, URL — stays inline in the builder, untranslated)
@@ -290,11 +289,6 @@ const VALUE_LABELS = {
   Sales:       { es:'Comerciante', en:'Sales', fr:'Commerçant(e)' },
   Services:    { es:'Servicios', en:'Services', fr:'Services' },
   Industrial:  { es:'Industrial', en:'Industrial', fr:'Industriel' },
-  // fideicomisario relationship values
-  Conyuge:     { es:'Cónyuge', en:'Spouse', fr:'Conjoint(e)' },
-  Hijo:        { es:'Hijo(a)', en:'Child', fr:'Enfant' },
-  Padre:       { es:'Padre/Madre', en:'Parent', fr:'Parent' },
-  Hermano:     { es:'Hermano(a)', en:'Sibling', fr:'Frère/Sœur' },
 }
 // Gendered marital-status forms by sexo (M/F). Used only when sexo is known;
 // otherwise resolveValue falls back to the neutral "(a)" forms in VALUE_LABELS.
@@ -381,10 +375,10 @@ const SECTIONS = [
   },
   {
     titleKey: 'sec10',
-    keys: ['fidei1Name','fidei1Relacion','fidei1Porcentaje',
-           'fidei2Name','fidei2Relacion','fidei2Porcentaje',
-           'fidei3Name','fidei3Relacion','fidei3Porcentaje',
-           'fidei4Name','fidei4Relacion','fidei4Porcentaje'],
+    keys: ['fidei1Name','fidei1Porcentaje',
+           'fidei2Name','fidei2Porcentaje',
+           'fidei3Name','fidei3Porcentaje',
+           'fidei4Name','fidei4Porcentaje'],
     optional: true,
   },
   {
@@ -524,10 +518,10 @@ function buildDocument(data, lang) {
     const notWorking = data.occupation === 'Retired' || data.occupation === 'Unemployed'
     // Dynamic label for fideicomisario keys: "Sustituto N — <campo>".
     const fideiLabel = (key) => {
-      const m = key.match(/^fidei(\d)(Name|Relacion|Porcentaje)$/)
+      const m = key.match(/^fidei(\d)(Name|Porcentaje)$/)
       if (!m) return null
       const sub = `${TT('fideiSub')} ${m[1]}`
-      const field = m[2] === 'Name' ? TT('fideiNameL') : m[2] === 'Relacion' ? TT('fideiRelacionL') : TT('fideiPorcentajeL')
+      const field = m[2] === 'Name' ? TT('fideiNameL') : TT('fideiPorcentajeL')
       return `${sub} — ${field}`
     }
     const rows = sec.keys
