@@ -299,14 +299,19 @@ const GENDERED_MARITAL = {
   Widowed:  { M:{es:'Viudo',en:'Widowed',fr:'Veuf'},              F:{es:'Viuda',en:'Widowed',fr:'Veuve'} },
   CommonLaw:{ M:{es:'Unión libre',en:'Common Law',fr:'Union de fait'}, F:{es:'Unión libre',en:'Common Law',fr:'Union de fait'} },
 }
+// Gendered occupation-status forms by sexo (M/F). Same mechanism as marital.
+const GENDERED_OCCUPATION = {
+  Retired:    { M:{es:'Jubilado',en:'Retired',fr:'Retraité'},     F:{es:'Jubilada',en:'Retired',fr:'Retraitée'} },
+  Unemployed: { M:{es:'Desempleado',en:'Unemployed',fr:'Sans emploi'}, F:{es:'Desempleada',en:'Unemployed',fr:'Sans emploi'} },
+}
 function resolveValue(value, lang, sexo) {
   if (value == null) return ''
   const v = String(value).trim()
   if (!v) return ''
-  // Gendered concordance for marital status when sexo is known.
-  if ((sexo === 'M' || sexo === 'F') && GENDERED_MARITAL[v]) {
-    const g = GENDERED_MARITAL[v][sexo]
-    return g[lang] ?? g['es'] ?? v
+  // Gendered concordance when sexo is known (marital status + occupation).
+  if (sexo === 'M' || sexo === 'F') {
+    const g = (GENDERED_MARITAL[v] || GENDERED_OCCUPATION[v])?.[sexo]
+    if (g) return g[lang] ?? g['es'] ?? v
   }
   const entry = VALUE_LABELS[v]
   if (!entry) return v               // safe fallback: print as-is
